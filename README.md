@@ -11,8 +11,8 @@
 2. Start the app
 
    ```bash
-    npx expo start:ios --device
-    npx expo start:android --device
+    npx expo run:ios --device
+    npx expo run:android --device
    ```
 
 In the output, you'll find options to open the app in a
