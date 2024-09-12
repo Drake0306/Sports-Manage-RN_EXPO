@@ -9,6 +9,7 @@ export default function Index() {
       <Text className="text-3xl">Sports Info</Text>
       <StatusBar style="auto" />
       <Link href="/home" className='mt-3'>Go to Home</Link>
+      <Link href="/LoginScreen" className='mt-3'>SignIn</Link>
     </View>
   );
 }

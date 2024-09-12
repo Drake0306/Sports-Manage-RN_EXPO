@@ -1,14 +1,10 @@
 import React from 'react';
-import { Link, router } from "expo-router";
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { useFonts } from 'expo-font';
 import { Inter_700Bold, Inter_600SemiBold } from '@expo-google-fonts/inter';
 
-const redirect = (url) => {
-  router.replace(url);
-};
-const SportButton = ({ icon, sport, link }) => (
-  <TouchableOpacity onPress={() => redirect(link)} style={styles.sportButton}>
+const SportButton = ({ icon, sport }) => (
+  <TouchableOpacity style={styles.sportButton}>
     <View style={styles.sportIconContainer}>{icon}</View>
     <Text style={styles.sportText}>{sport}</Text>
     {/* <ChevronRight style={styles.chevronIcon} size={24} color="#000" /> */}
@@ -19,12 +15,12 @@ const AthleteSection = ({ name, sports }) => (
   <View style={styles.athleteSection}>
     <Text style={styles.athleteName}>{name}</Text>
     {sports.map((sport, index) => (
-      <SportButton key={index} icon={sport.icon} link={sport.link} sport={sport.name} />
+      <SportButton key={index} icon={sport.icon} sport={sport.name} />
     ))}
   </View>
 );
 
-const Communication = () => {
+const Coaches = () => {
   let [fontsLoaded] = useFonts({
     Inter_700Bold,
     Inter_600SemiBold,
@@ -35,13 +31,13 @@ const Communication = () => {
   }
 
   const jadenSports = [
-    { name: 'BASKETBALL',link: 'InnerScreens/coaches', icon: ""},
-    { name: 'FOOTBALL',link: '/InnerScreens/coaches', icon: "" },
+    { name: 'BASKETBALL', icon: ""},
+    { name: 'FOOTBALL', icon: "" },
   ];
 
   const noelleSports = [
-    { name: 'SOCCER',link: '/InnerScreens/coaches', icon: "" },
-    { name: 'SOFTBALL',link: '/InnerScreens/coaches', icon: "" },
+    { name: 'SOCCER', icon: "" },
+    { name: 'SOFTBALL', icon: "" },
   ];
 
   return (
@@ -119,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Communication;
+export default Coaches;
