@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
+import useLoginStore from '../store/loginStore';
+import { fetchLoginData as fetchLoginApiData } from '../api/loginApi';
 
 const AthleteCard = ({ name, school, sports, imageUrl, logoUrl }) => (
   <View style={styles.athleteCard}>
@@ -25,8 +27,48 @@ export default function Home() {
     Inter_700Bold,
   });
 
+  const [userRole, setUserRole] = useState(null); // Local state for user role
+  const [loginData, setLoginData] = useState(null); // Local state for login data
+  const [loading, setLoading] = useState(false); // Local state for loading
+  const [error, setError] = useState(null); // Local state for error
+
+  // useEffect(() => {
+  //   // Fetch login data on component mount
+  //   fetchLoginData();
+  // }, [fetchLoginData]);
+
+
+  useEffect(() => {
+    // Fetch login data on component mount
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchLoginApiData(); // Fetch data from API
+        setLoginData(data); // Set login data
+        // Set user role based on the title in the response
+        if (data && typeof data.title === 'string') {
+          setUserRole('admin'); // Set user role to 'admin' if title is a string
+        } else {
+          setUserRole('guest'); // Default to 'guest' if title is not a string
+        }
+      } catch (error) {
+        setError(error.message); // Set error message
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false); // Set loading to false
+      }
+    };
+
+    fetchData(); // Call the function to fetch data
+  }, []);
+
   if (!fontsLoaded) {
-    return null;
+    return null; // Return null if fonts are not loaded
+  }
+
+  if (!fontsLoaded) {
+    return null; // Return null if fonts are not loaded
   }
 
   return (
@@ -34,6 +76,11 @@ export default function Home() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <Text style={styles.title}>ATHLETES</Text>
+          {loginData && (
+            <Text style={styles.text}>
+              Title: {loginData.title} {userRole  }{/* Display the title from the response */}
+            </Text>
+          )}
           <View style={styles.profileIcon}>
             <Text style={styles.profileName}>JASONM &nbsp;&nbsp;</Text>
             <Image 
@@ -180,6 +227,6 @@ const styles = StyleSheet.create({
   timestamp: {
     fontFamily: 'Inter_400Regular',
     fontSize: 12,
-    color: '#666',
+    color: '#999',
   },
 });
