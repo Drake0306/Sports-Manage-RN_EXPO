@@ -2,22 +2,6 @@ import React from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
 
-const AthleteCard = ({ name, school, sports, imageUrl, logoUrl }) => (
-  <View style={styles.athleteCard}>
-    <Image source={{ uri: imageUrl }} style={styles.athleteImage} />
-    <View style={styles.athleteInfo}>
-      <Text style={styles.athleteName}>{name}</Text>
-      <View style={styles.schoolInfo}>
-        <Image source={{ uri: logoUrl }} style={styles.schoolLogo} />
-        <View>
-          <Text style={styles.schoolName}>{school}</Text>
-          <Text style={styles.sports}>{sports}</Text>
-        </View>
-      </View>
-    </View>
-  </View>
-);
-
 export default function Home() {
   let [fontsLoaded] = useFonts({
     Inter_400Regular,
@@ -32,34 +16,7 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text style={styles.title}>ATHLETES</Text>
-          <View style={styles.profileIcon}>
-            <Text style={styles.profileName}>JASONM &nbsp;&nbsp;</Text>
-            <Image 
-              source={{ uri: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-09-11%20at%2011.39.14%E2%80%AFPM-Iyguck5eKXLsgftCzNPoXJxke25PaQ.png' }} 
-              style={styles.profileImage} 
-            />
-          </View>
-        </View>
-
-        <AthleteCard
-          name="JADEN WALTON"
-          school="LOVELAND HIGH SCHOOL"
-          sports="Basketball | Football"
-          imageUrl="/placeholder.svg?height=60&width=60"
-          logoUrl="/placeholder.svg?height=24&width=24"
-        />
-
-        <AthleteCard
-          name="NOELLE SCHEPER"
-          school="WALNUT HILLS HIGH SCHOOL"
-          sports="Soccer | Softball"
-          imageUrl="/placeholder.svg?height=60&width=60"
-          logoUrl="/placeholder.svg?height=24&width=24"
-        />
-
-        {/* <View style={styles.footer}>
+        <View style={styles.footer}>
           <View style={styles.coachInfo}>
             <Image source={{ uri: '/placeholder.svg?height=24&width=24' }} style={styles.coachIcon} />
             <Text style={styles.coachName}>COACH TONY</Text>
@@ -68,7 +25,7 @@ export default function Home() {
             Hey Sharks, we should definitely invest in Motiv - they gave a great pitch today!
           </Text>
           <Text style={styles.timestamp}>10/6/23 3:33PM</Text>
-        </View> */}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

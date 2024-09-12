@@ -35,24 +35,35 @@ const Communication = () => {
   }
 
   const jadenSports = [
-    { name: 'BASKETBALL',link: 'InnerScreens/coaches', icon: ""},
-    { name: 'FOOTBALL',link: '/InnerScreens/coaches', icon: "" },
+    { name: 'BASKETBALL',link: '/(screens)/coaches', icon: ""},
+    { name: 'FOOTBALL',link: '/(screens)/coaches', icon: "" },
   ];
 
   const noelleSports = [
-    { name: 'SOCCER',link: '/InnerScreens/coaches', icon: "" },
-    { name: 'SOFTBALL',link: '/InnerScreens/coaches', icon: "" },
+    { name: 'SOCCER',link: '/(screens)/coaches', icon: "" },
+    { name: 'SOFTBALL',link: '/(screens)/coaches', icon: "" },
   ];
+  
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
+        {/* <View style={styles.header}>
           <Text style={styles.headerText}>JASONM</Text>
           <Image 
             source={{ uri: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-09-11%20at%2011.43.53%E2%80%AFPM-hhB8T77FmXGBatfFJIgzSjGtfBkl9e.png' }} 
             style={styles.profileImage} 
           />
+        </View> */}
+        <View style={styles.header}>
+          <Text style={styles.title}>ATHLETES</Text>
+          <View style={styles.profileIcon}>
+            <Text style={styles.profileName}>JASONM &nbsp;&nbsp;</Text>
+            <Image 
+              source={{ uri: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-09-11%20at%2011.39.14%E2%80%AFPM-Iyguck5eKXLsgftCzNPoXJxke25PaQ.png' }} 
+              style={styles.profileImage} 
+            />
+          </View>
         </View>
         <AthleteSection name="JADEN" sports={jadenSports} />
         <AthleteSection name="NOELLE" sports={noelleSports} />
@@ -67,13 +78,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   scrollContent: {
-    padding: 20,
+    padding: 16,
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
+  },
+  title: {
+    fontFamily: 'Inter_700Bold',
+    fontSize: 18,
+    color: '#000',
+  },
+  profileIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    padding: 8,
+  },
+  profileName: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 11,
   },
   headerText: {
     fontFamily: 'Inter_600SemiBold',
@@ -81,9 +108,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    marginRight: 8,
+    backgroundColor: 'black'
   },
   athleteSection: {
     marginBottom: 20,
