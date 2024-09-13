@@ -1,8 +1,10 @@
+
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
 import useLoginStore from '../store/loginStore';
 import { fetchLoginData as fetchLoginApiData } from '../api/loginApi';
+import { Link, router } from "expo-router";
 
 const AthleteCard = ({ name, school, sports, imageUrl, logoUrl }) => (
   <View style={styles.athleteCard}>
@@ -71,10 +73,14 @@ export default function Home() {
     return null; // Return null if fonts are not loaded
   }
 
+  const redirect = (url) => {
+    router.replace(url);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
+        <TouchableOpacity style={styles.header}onPress={() => redirect('/(screens)/parentSettings')}>
           <Text style={styles.title}>ATHLETES</Text>
           {loginData && (
             <Text style={styles.text}>
@@ -88,7 +94,7 @@ export default function Home() {
               style={styles.profileImage} 
             />
           </View>
-        </View>
+        </TouchableOpacity>
 
         <AthleteCard
           name="JADEN WALTON"
@@ -133,6 +139,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 16,
     marginBottom: 20,
   },
   title: {
