@@ -7,7 +7,7 @@ export default function HomeLayout() {
         headerShown: false,
         tabBarShowLabel: false,
       }}>
-      <Stack.Screen name="sign-in" />
+      <Stack.Screen name="index" />
     </Stack>
   );
 }

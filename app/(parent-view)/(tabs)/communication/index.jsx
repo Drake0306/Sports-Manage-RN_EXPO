@@ -5,7 +5,7 @@ import { useFonts } from 'expo-font';
 import { Inter_700Bold, Inter_600SemiBold } from '@expo-google-fonts/inter';
 
 const redirect = (url) => {
-  router.replace(url);
+  router.navigate(url);
 };
 const SportButton = ({ icon, sport, link }) => (
   <TouchableOpacity onPress={() => redirect(link)} style={styles.sportButton}>
@@ -35,13 +35,13 @@ const Communication = () => {
   }
 
   const jadenSports = [
-    { name: 'BASKETBALL',link: '/(screens)/coaches', icon: ""},
-    { name: 'FOOTBALL',link: '/(screens)/coaches', icon: "" },
+    { name: 'BASKETBALL',link: '/(parent-view)/coaches', icon: ""},
+    { name: 'FOOTBALL',link: '/(parent-view)/coaches', icon: "" },
   ];
 
   const noelleSports = [
-    { name: 'SOCCER',link: '/(screens)/coaches', icon: "" },
-    { name: 'SOFTBALL',link: '/(screens)/coaches', icon: "" },
+    { name: 'SOCCER',link: '/(parent-view)/coaches', icon: "" },
+    { name: 'SOFTBALL',link: '/(parent-view)/coaches', icon: "" },
   ];
   
 

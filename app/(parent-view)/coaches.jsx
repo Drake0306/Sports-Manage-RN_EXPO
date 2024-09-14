@@ -13,7 +13,7 @@ const coachesData = [
 
 export default function Coaches() {
   const redirect = (url) => {
-    router.replace(url);
+    router.navigate(url);
   };
   
 
@@ -35,7 +35,7 @@ export default function Coaches() {
       <ScrollView style={styles.scrollView}>
         {coachesData.map((coach) => (
           <TouchableOpacity
-            onPress={() => redirect('/(screens)/chat')}
+            onPress={() => redirect('/(parent-view)/chat')}
             key={coach.id}
             style={[
               styles.coachCard,

@@ -16,11 +16,12 @@ const TabIcon = ({ icon, name, focused, color }) => {
     )
 }
 
-const TabsLayout = () => {
+export default () => {
     return (
         <>
             <Tabs
                 screenOptions={{
+                    headerShown: false,
                     tabBarShowLabel: false,
                     tabBarActiveTintColor: '#ff311a',
                     tabBarInactiveTintColor: '#000000',
@@ -37,7 +38,7 @@ const TabsLayout = () => {
                 <Tabs.Screen
                     name="home"
                     options={{
-                        title: "Home",
+                        title: "HomeC",
                         headerShown: false,
                         tabBarShowLabel: false,
                         tabBarIcon: ({ color, focused }) => (
@@ -54,11 +55,11 @@ const TabsLayout = () => {
                 <Tabs.Screen
                     name="communication"
                     options={{
-                        title: "Communication",
+                        title: "CommunicationC",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.messenger}
+                                // icon={icons.messenger}
                                 color={color}
                                 focused={focused}
                                 name="Communication"
@@ -70,11 +71,11 @@ const TabsLayout = () => {
                 <Tabs.Screen
                     name="calander"
                     options={{
-                        title: "Calander",
+                        title: "CalanderC",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.calendar}
+                                // icon={icons.calendar}
                                 color={color}
                                 focused={focused}
                                 name="Calander"
@@ -87,5 +88,3 @@ const TabsLayout = () => {
         </>
     )
 }
-
-export default TabsLayout

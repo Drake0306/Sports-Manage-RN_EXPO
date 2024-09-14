@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
-import useLoginStore from '../store/loginStore';
-import { fetchLoginData as fetchLoginApiData } from '../api/loginApi';
+import useLoginStore from '../../../store/loginStore';
+import { fetchLoginData as fetchLoginApiData } from '../../../api/loginApi';
 import { Link, router } from "expo-router";
 
 const AthleteCard = ({ name, school, sports, imageUrl, logoUrl }) => (
@@ -82,11 +82,7 @@ export default function Home() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <TouchableOpacity style={styles.header}onPress={() => redirect('/(screens)/parentSettings')}>
           <Text style={styles.title}>ATHLETES</Text>
-          {loginData && (
-            <Text style={styles.text}>
-              Title: {loginData.title} {userRole  }{/* Display the title from the response */}
-            </Text>
-          )}
+          
           <View style={styles.profileIcon}>
             <Text style={styles.profileName}>JASONM &nbsp;&nbsp;</Text>
             <Image 
@@ -111,6 +107,15 @@ export default function Home() {
           imageUrl="/placeholder.svg?height=60&width=60"
           logoUrl="/placeholder.svg?height=24&width=24"
         />
+
+        {/* Dynamic data */}
+        {loginData && (
+            <Text style={styles.text}>
+              Title: {loginData.title} {userRole  }{/* Display the title from the response */}
+            </Text>
+          )}
+
+          <Link href="/home/notification" className='mt-3'>View Notifications</Link>
 
         {/* <View style={styles.footer}>
           <View style={styles.coachInfo}>
