@@ -38,9 +38,11 @@ export default () => {
                 <Tabs.Screen
                     name="home"
                     options={{
-                        title: "HomeC",
+                        title: "Home",
                         headerShown: false,
-                        tabBarShowLabel: false,
+                        // tabBarShowLabel: false,
+                        tabBarLabel: 'Home',
+                        
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
                                 icon={icons.home}
@@ -53,16 +55,16 @@ export default () => {
                 />
 
                 <Tabs.Screen
-                    name="communication"
+                    name="connect"
                     options={{
-                        title: "CommunicationC",
+                        title: "Connect",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                // icon={icons.messenger}
+                                icon={icons.messenger}
                                 color={color}
                                 focused={focused}
-                                name="Communication"
+                                name="Connect"
                             />
                         )
                     }}
@@ -71,11 +73,11 @@ export default () => {
                 <Tabs.Screen
                     name="calander"
                     options={{
-                        title: "CalanderC",
+                        title: "Calander",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                // icon={icons.calendar}
+                                icon={icons.calendar}
                                 color={color}
                                 focused={focused}
                                 name="Calander"

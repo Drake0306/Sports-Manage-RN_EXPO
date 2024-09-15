@@ -11,7 +11,7 @@ const coachesData = [
   { id: 5, name: 'ABBY MCINTURF', message: "That's awesome! ...", image: '', hasNotification: false },
 ];
 
-export default function CommunicationC() {
+export default function CoachView() {
   const redirect = (url) => {
     router.navigate(url);
   };
@@ -35,7 +35,7 @@ export default function CommunicationC() {
       <ScrollView style={styles.scrollView}>
         {coachesData.map((coach) => (
           <TouchableOpacity
-            onPress={() => redirect('/(parent-view)/chat')}
+            onPress={() => redirect('/pages/chat')}
             key={coach.id}
             style={[
               styles.coachCard,

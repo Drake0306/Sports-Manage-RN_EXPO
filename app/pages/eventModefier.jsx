@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-export default function eventModefier() {
+export default function EventModefier() {
   const [allDay, setAllDay] = useState(false);
   const [requireAttendance, setRequireAttendance] = useState(true);
 

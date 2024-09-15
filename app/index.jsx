@@ -22,7 +22,7 @@ const StartPage = () => {
         if (data && typeof data.title === 'string') {
           setUserRole('parent'); // Set user role to 'admin' if title is a string
           // setURL('/home');
-          setURL('/homeC');
+          // setURL('/homeC');
         } else {
           setUserRole('coach'); // Default to 'guest' if title is not a string
         }

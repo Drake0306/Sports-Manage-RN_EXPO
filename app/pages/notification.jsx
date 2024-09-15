@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
 
-export default function Home() {
+export default function Notification() {
   let [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_600SemiBold,

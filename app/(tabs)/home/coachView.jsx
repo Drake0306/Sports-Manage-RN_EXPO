@@ -7,7 +7,7 @@ import { Feather } from '@expo/vector-icons';
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const dates = [18, 19, 20, 21, 22, 23, 24];
 
-export default function HomeC() {
+export default function CoachView() {
   const [activeTab, setActiveTab] = useState('UPCOMING');
   const [announcement, setAnnouncement] = useState('');
 
@@ -64,7 +64,7 @@ export default function HomeC() {
             <Text style={styles.eventTitle}>WEIGHT TRAINING</Text>
             <Text style={styles.eventLocation}>Loveland HS Weight Room</Text>
           </View>
-          <TouchableOpacity onPress={() => redirect('/(coach-view)/eventPreview')}>
+          <TouchableOpacity onPress={() => redirect('/pages/eventPreview')}>
             <Feather name="edit-2" size={24} color="#ccc" />
           </TouchableOpacity>
         </View>

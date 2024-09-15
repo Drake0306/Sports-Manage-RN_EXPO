@@ -5,10 +5,12 @@ export default function HomeLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        tabBarShowLabel: false,
+        // tabBarShowLabel: false,
       }}>
       <Stack.Screen name="index" />
-      <Stack.Screen screenOptions={{presentation: 'modal'}} name="notification" />
+      <Stack.Screen name="parentView" />
+      <Stack.Screen name="coachView" />
+      <Stack.Screen name="coaches" />
     </Stack>
   );
 }

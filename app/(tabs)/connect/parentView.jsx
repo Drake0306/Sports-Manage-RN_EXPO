@@ -24,7 +24,7 @@ const AthleteSection = ({ name, sports }) => (
   </View>
 );
 
-const Communication = () => {
+const ParentView = () => {
   let [fontsLoaded] = useFonts({
     Inter_700Bold,
     Inter_600SemiBold,
@@ -35,13 +35,13 @@ const Communication = () => {
   }
 
   const jadenSports = [
-    { name: 'BASKETBALL',link: '/(parent-view)/coaches', icon: ""},
-    { name: 'FOOTBALL',link: '/(parent-view)/coaches', icon: "" },
+    { name: 'BASKETBALL',link: '(tabs)/connect/coaches', icon: ""},
+    { name: 'FOOTBALL',link: '(tabs)/connect/coaches', icon: "" },
   ];
 
   const noelleSports = [
-    { name: 'SOCCER',link: '/(parent-view)/coaches', icon: "" },
-    { name: 'SOFTBALL',link: '/(parent-view)/coaches', icon: "" },
+    { name: 'SOCCER',link: '(tabs)/connect/coaches', icon: "" },
+    { name: 'SOFTBALL',link: '(tabs)/connect/coaches', icon: "" },
   ];
   
 
@@ -148,4 +148,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Communication;
+export default ParentView;

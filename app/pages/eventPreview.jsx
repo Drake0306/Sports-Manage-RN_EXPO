@@ -37,7 +37,7 @@ export default function EventPreview() {
           <Feather name="copy" size={24} color="#333" />
           <Text style={styles.actionText}>Duplicate</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => redirect('/(coach-view)/eventModefier')} style={styles.actionButton}>
+        <TouchableOpacity onPress={() => redirect('/pages/eventModefier')} style={styles.actionButton}>
           <Feather name="edit-2" size={24} color="#333" />
           <Text style={styles.actionText}>Edit</Text>
         </TouchableOpacity>

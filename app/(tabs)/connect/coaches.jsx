@@ -35,7 +35,7 @@ export default function Coaches() {
       <ScrollView style={styles.scrollView}>
         {coachesData.map((coach) => (
           <TouchableOpacity
-            onPress={() => redirect('/(parent-view)/chat')}
+            onPress={() => redirect('/pages/chat')}
             key={coach.id}
             style={[
               styles.coachCard,

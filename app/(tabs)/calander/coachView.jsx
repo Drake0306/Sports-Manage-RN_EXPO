@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const CalanderC = () => {
+const CoachView = () => {
   const currentDate = new Date(2023, 11, 6); // December 6, 2023
 
   const renderCalendarDays = () => {
@@ -186,4 +186,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CalanderC;
+export default CoachView;

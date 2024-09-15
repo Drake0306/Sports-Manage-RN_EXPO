@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
-import useLoginStore from '../../../store/loginStore';
-import { fetchLoginData as fetchLoginApiData } from '../../../api/loginApi';
+import useLoginStore from '../../store/loginStore';
+import { fetchLoginData as fetchLoginApiData } from '../../api/loginApi';
 import { Link, router } from "expo-router";
+import { useHeaderHeight } from '@react-navigation/elements';
 
 const AthleteCard = ({ name, school, sports, imageUrl, logoUrl }) => (
   <View style={styles.athleteCard}>
@@ -22,13 +23,14 @@ const AthleteCard = ({ name, school, sports, imageUrl, logoUrl }) => (
   </View>
 );
 
-export default function Home() {
+export default function ParentView() {
   let [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_600SemiBold,
     Inter_700Bold,
   });
 
+  const headerHeight = useHeaderHeight();
   const [userRole, setUserRole] = useState(null); // Local state for user role
   const [loginData, setLoginData] = useState(null); // Local state for login data
   const [loading, setLoading] = useState(false); // Local state for loading
@@ -115,7 +117,7 @@ export default function Home() {
             </Text>
           )}
 
-          <Link href="/home/notification" className='mt-3'>View Notifications</Link>
+          <Link href="/pages/notification" className='mt-3'>View Notifications</Link>
 
         {/* <View style={styles.footer}>
           <View style={styles.coachInfo}>

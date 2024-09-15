@@ -34,8 +34,7 @@ export default function RootLayout() {
           // tabBarShowLabel: false,
         }}
       >
-        <Stack.Screen name="(parent-view)/(tabs)" />
-        <Stack.Screen name="(coach-view)/(tabs)" />
+        <Stack.Screen name="(tabs)" />
         <Stack.Screen name="(auth)" />
       </Stack>
     </ThemeProvider>

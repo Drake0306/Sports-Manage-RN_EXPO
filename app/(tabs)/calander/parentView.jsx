@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useHeaderHeight } from '@react-navigation/elements';
 
-const Calander = () => {
+const ParentView = () => {
   const currentDate = new Date(2023, 11, 6); // December 6, 2023
-
+  const headerHeight = useHeaderHeight();
+  
   const renderCalendarDays = () => {
     const days = [];
     for (let i = 27; i <= 31; i++) {
@@ -27,53 +29,55 @@ const Calander = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>TODAY</Text>
-        <View style={styles.profileContainer}>
-          <Text style={styles.profileText}>JASONM</Text>
-          <View style={styles.profileImage} />
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollContent}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>TODAY</Text>
+          <View style={styles.profileContainer}>
+            <Text style={styles.profileText}>JASONM</Text>
+            <View style={styles.profileImage} />
+          </View>
         </View>
-      </View>
 
-      <View style={styles.calendarContainer}>
-        <Text style={styles.calendarHeader}>DECEMBER 2023</Text>
-        <View style={styles.calendarNavigation}>
-          <TouchableOpacity>
-            <Ionicons name="chevron-back" size={24} color="#000" />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Ionicons name="chevron-forward" size={24} color="#000" />
-          </TouchableOpacity>
+        <View style={styles.calendarContainer}>
+          <Text style={styles.calendarHeader}>DECEMBER 2023</Text>
+          <View style={styles.calendarNavigation}>
+            <TouchableOpacity>
+              <Ionicons name="chevron-back" size={24} color="#000" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Ionicons name="chevron-forward" size={24} color="#000" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.calendarDays}>
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
+              <Text key={day} style={styles.calendarDayHeader}>{day}</Text>
+            ))}
+            {renderCalendarDays()}
+          </View>
         </View>
-        <View style={styles.calendarDays}>
-          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-            <Text key={day} style={styles.calendarDayHeader}>{day}</Text>
-          ))}
-          {renderCalendarDays()}
-        </View>
-      </View>
 
-      <View style={styles.eventContainer}>
-        <Text style={styles.eventDate}>DECEMBER 6TH</Text>
-        <View style={styles.eventCard}>
-          <View style={styles.eventTime}>
-            <Text style={styles.eventTimeText}>05:30 PM</Text>
-            <Text style={styles.eventTimeText}>07:00 PM</Text>
+        <View style={styles.eventContainer}>
+          <Text style={styles.eventDate}>DECEMBER 6TH</Text>
+          <View style={styles.eventCard}>
+            <View style={styles.eventTime}>
+              <Text style={styles.eventTimeText}>05:30 PM</Text>
+              <Text style={styles.eventTimeText}>07:00 PM</Text>
+            </View>
+            <View style={styles.eventDetails}>
+              <Text style={styles.eventTitle}>WEIGHT TRAINING</Text>
+              <Text style={styles.eventLocation}>Loveland HS Weight Room</Text>
+            </View>
+            <View style={styles.eventStatus}>
+              <Ionicons name="checkmark-circle" size={24} color="#4CAF50" />
+            </View>
+            <TouchableOpacity style={styles.eventOptions}>
+              <Ionicons name="ellipsis-vertical" size={24} color="#000" />
+            </TouchableOpacity>
           </View>
-          <View style={styles.eventDetails}>
-            <Text style={styles.eventTitle}>WEIGHT TRAINING</Text>
-            <Text style={styles.eventLocation}>Loveland HS Weight Room</Text>
-          </View>
-          <View style={styles.eventStatus}>
-            <Ionicons name="checkmark-circle" size={24} color="#4CAF50" />
-          </View>
-          <TouchableOpacity style={styles.eventOptions}>
-            <Ionicons name="ellipsis-vertical" size={24} color="#000" />
-          </TouchableOpacity>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -184,6 +188,9 @@ const styles = StyleSheet.create({
   eventOptions: {
     justifyContent: 'center',
   },
+  scrollContent: {
+    padding: 16,
+  },
 });
 
-export default Calander;
+export default ParentView;
