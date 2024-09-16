@@ -2,6 +2,7 @@ import { View, Text, Image } from 'react-native'
 import React from 'react'
 import { Tabs, Redirect } from 'expo-router';
 import { icons } from '@/constants';
+import { HomeIcon, MessageCircleMoreIcon, CalendarDaysIcon } from 'lucide-react-native';
 
 const TabIcon = ({ icon, name, focused, color }) => {
     return (
@@ -27,11 +28,12 @@ export default () => {
                     tabBarInactiveTintColor: '#000000',
                     tabBarStyle: {
                         backgroundColor: 'white',
-                        borderTopWidth: 0,
+                        borderTopWidth: 3,
                         borderLeftWidth: 0,
                         borderRightWidth: 0,
                         borderBottomWidth: 0,
-                        height: 100
+
+                        height: 110
                     },
                 }}
             >
@@ -42,15 +44,17 @@ export default () => {
                         headerShown: false,
                         // tabBarShowLabel: false,
                         tabBarLabel: 'Home',
-                        
                         tabBarIcon: ({ color, focused }) => (
-                            <TabIcon
-                                icon={icons.home}
-                                color={color}
-                                focused={focused}
-                                name="Home"
-                            />
-                        )
+                            <HomeIcon size={50} color={color} />
+                          ),                      
+                        // tabBarIcon: ({ color, focused }) => (
+                        //     <TabIcon
+                        //         icon={icons.home}
+                        //         color={color}
+                        //         focused={focused}
+                        //         name="Home"
+                        //     />
+                        // )
                     }}
                 />
 
@@ -60,13 +64,17 @@ export default () => {
                         title: "Connect",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
-                            <TabIcon
-                                icon={icons.messenger}
-                                color={color}
-                                focused={focused}
-                                name="Connect"
-                            />
-                        )
+                            <MessageCircleMoreIcon size={50} color={color} />
+                          ),
+                      
+                        // tabBarIcon: ({ color, focused }) => (
+                        //     <TabIcon
+                        //         icon={icons.messenger}
+                        //         color={color}
+                        //         focused={focused}
+                        //         name="Connect"
+                        //     />
+                        // )
                     }}
                 />
 
@@ -76,13 +84,16 @@ export default () => {
                         title: "Calander",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
-                            <TabIcon
-                                icon={icons.calendar}
-                                color={color}
-                                focused={focused}
-                                name="Calander"
-                            />
-                        )
+                            <CalendarDaysIcon size={50} color={color} />
+                          ),
+                        // tabBarIcon: ({ color, focused }) => (
+                        //     <TabIcon
+                        //         icon={icons.calendar}
+                        //         color={color}
+                        //         focused={focused}
+                        //         name="Calander"
+                        //     />
+                        // )
                     }}
                 />
 

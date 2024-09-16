@@ -2,9 +2,10 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import ParentView from './parentView';
 import CoachView from './coachView';
+import StudentView from './studentView';
 
 export default function index () {
-    const data = 1;
+    const data = 3;
     if(data == 1) {
         return (
             <>
@@ -22,7 +23,7 @@ export default function index () {
     else {
         return (
             <>
-                <Text>Error</Text>
+                <StudentView /> 
             </>
         );
     }

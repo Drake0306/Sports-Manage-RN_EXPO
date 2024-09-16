@@ -2,11 +2,12 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useHeaderHeight } from '@react-navigation/elements';
+
 import CalendarComponent from '../../components/calendarComponent';
 import ShrinkableTrainingCard from '../../components/shrinkableTrainingCard';
+import LegendCalander from '../../components/legendCalander';
 
-const ParentView = () => {
-
+const StudentView = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollContent}>
@@ -25,7 +26,6 @@ const ParentView = () => {
 
           <ShrinkableTrainingCard />
 
-
           <View style={styles.eventCard}>
             <View style={styles.eventTime}>
               <Text style={styles.eventTimeText}>05:30 PM</Text>
@@ -42,6 +42,7 @@ const ParentView = () => {
               <Ionicons name="ellipsis-vertical" size={24} color="#000" />
             </TouchableOpacity>
           </View>
+
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -156,8 +157,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   scrollContent: {
-    padding: 16,
+    padding: 0,
   },
 });
 
-export default ParentView;
+export default StudentView;
