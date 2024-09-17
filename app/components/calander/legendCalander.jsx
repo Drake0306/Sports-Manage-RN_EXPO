@@ -76,7 +76,7 @@ export default function LegendCalander() {
 
   return (
     <View style={styles.container}>
-      {/* <Calendar
+      <Calendar
         current={selectedDate}
         onDayPress={(day) => setSelectedDate(new Date(day.timestamp))}
         hideExtraDays
@@ -90,7 +90,7 @@ export default function LegendCalander() {
           dayTextColor: '#2d4150',
           textDisabledColor: '#d9e1e8',
         }}
-      /> */}
+      />
       <View style={styles.weekContainer}>
         {renderWeekDays()}
       </View>

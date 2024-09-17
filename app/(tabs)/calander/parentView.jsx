@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useHeaderHeight } from '@react-navigation/elements';
-import CalendarComponent from '../../components/calendarComponent';
+import CalendarComponent from '../../components/calander/calendarComponent';
 import ShrinkableTrainingCard from '../../components/shrinkableTrainingCard';
 
 const ParentView = () => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import WeeklyCalendar from '../../components/weeklyCalendar';
+import WeeklyCalendar from '../../components/calander/weeklyCalendar';
 import ShrinkableTrainingCard from '../../components/shrinkableTrainingCard';
 import AthleticsQRCode from '../../components/athleticsQRCode';
 import Resources from '../../components/resources';

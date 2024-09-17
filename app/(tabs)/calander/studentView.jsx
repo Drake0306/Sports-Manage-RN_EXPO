@@ -3,9 +3,9 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } fr
 import { Ionicons } from '@expo/vector-icons';
 import { useHeaderHeight } from '@react-navigation/elements';
 
-import CalendarComponent from '../../components/calendarComponent';
+import CalendarComponent from '../../components/calander/calendarComponent';
 import ShrinkableTrainingCard from '../../components/shrinkableTrainingCard';
-import LegendCalander from '../../components/legendCalander';
+import LegendCalander from '../../components/calander/legendCalander';
 
 const StudentView = () => {
   return (
@@ -20,6 +20,7 @@ const StudentView = () => {
         </View>
 
         <CalendarComponent />
+        {/* <LegendCalander /> */}
 
         <View style={styles.eventContainer}>
           <Text style={styles.eventDate}>DECEMBER 6TH</Text>
