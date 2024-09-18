@@ -1,79 +1,60 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useHeaderHeight } from '@react-navigation/elements';
+import CalendarComponent from '../../components/calander/calendarComponent';
+import ShrinkableTrainingCard from '../../components/shrinkableBtn/shrinkableTrainingCard';
+import { router } from 'expo-router';
 
 const CoachView = () => {
-  const currentDate = new Date(2023, 11, 6); // December 6, 2023
-
-  const renderCalendarDays = () => {
-    const days = [];
-    for (let i = 27; i <= 31; i++) {
-      days.push(<Text key={`prev-${i}`} style={styles.calendarDay}>{i}</Text>);
+  const redirect = (url) => {
+    if(url === ''){
+      router.back();
+    } else {
+      router.navigate(url);
     }
-    for (let i = 1; i <= 31; i++) {
-      days.push(
-        <Text 
-          key={i} 
-          style={[
-            styles.calendarDay, 
-            i === 6 ? styles.selectedDay : null
-          ]}
-        >
-          {i}
-        </Text>
-      );
-    }
-    return days;
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>TODAY</Text>
-        <View style={styles.profileContainer}>
-          <Text style={styles.profileText}>JASONM</Text>
-          <View style={styles.profileImage} />
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollContent}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>ATHLETES</Text>
+          <TouchableOpacity onPress={() => router.navigate('/pages/userProfile')} style={styles.profileContainer}>
+            <Text style={styles.profileText}>JASONM</Text>
+            <View style={styles.profileImage} />
+          </TouchableOpacity>
         </View>
-      </View>
 
-      <View style={styles.calendarContainer}>
-        <Text style={styles.calendarHeader}>DECEMBER 2023</Text>
-        <View style={styles.calendarNavigation}>
-          <TouchableOpacity>
-            <Ionicons name="chevron-back" size={24} color="#000" />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Ionicons name="chevron-forward" size={24} color="#000" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.calendarDays}>
-          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-            <Text key={day} style={styles.calendarDayHeader}>{day}</Text>
-          ))}
-          {renderCalendarDays()}
-        </View>
-      </View>
+        <CalendarComponent />
 
-      <View style={styles.eventContainer}>
-        <Text style={styles.eventDate}>DECEMBER 6TH</Text>
-        <View style={styles.eventCard}>
-          <View style={styles.eventTime}>
-            <Text style={styles.eventTimeText}>05:30 PM</Text>
-            <Text style={styles.eventTimeText}>07:00 PM</Text>
-          </View>
-          <View style={styles.eventDetails}>
-            <Text style={styles.eventTitle}>WEIGHT TRAINING</Text>
-            <Text style={styles.eventLocation}>Loveland HS Weight Room</Text>
-          </View>
-          <View style={styles.eventStatus}>
-            <Ionicons name="checkmark-circle" size={24} color="#4CAF50" />
-          </View>
-          <TouchableOpacity style={styles.eventOptions}>
-            <Ionicons name="ellipsis-vertical" size={24} color="#000" />
-          </TouchableOpacity>
+        <View style={styles.eventContainer}>
+          <Text style={styles.eventDate}>DECEMBER 6TH</Text>
+
+          <ShrinkableTrainingCard />
+          <ShrinkableTrainingCard />
+          <ShrinkableTrainingCard />
+
+
+          {/* <View style={styles.eventCard}>
+            <View style={styles.eventTime}>
+              <Text style={styles.eventTimeText}>05:30 PM</Text>
+              <Text style={styles.eventTimeText}>07:00 PM</Text>
+            </View>
+            <View style={styles.eventDetails}>
+              <Text style={styles.eventTitle}>WEIGHT TRAINING</Text>
+              <Text style={styles.eventLocation}>Loveland HS Weight Room</Text>
+            </View>
+            <View style={styles.eventStatus}>
+              <Ionicons name="checkmark-circle" size={24} color="#4CAF50" />
+            </View>
+            <TouchableOpacity style={styles.eventOptions}>
+              <Ionicons name="ellipsis-vertical" size={24} color="#000" />
+            </TouchableOpacity>
+          </View> */}
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -86,7 +67,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    padding: 10,
   },
   headerText: {
     fontSize: 18,
@@ -147,7 +128,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   eventContainer: {
-    padding: 20,
+    padding: 10,
   },
   eventDate: {
     fontSize: 16,
@@ -183,6 +164,9 @@ const styles = StyleSheet.create({
   },
   eventOptions: {
     justifyContent: 'center',
+  },
+  scrollContent: {
+    padding: 16,
   },
 });
 

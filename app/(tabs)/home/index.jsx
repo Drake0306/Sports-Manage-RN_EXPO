@@ -5,10 +5,10 @@ import CoachView from './coachView';
 import StudentView from './studentView';
 
 export default function index () {
-    const data = 3;
+    const data = 2;
     if(data == 1) {
         return (
-            <>
+            <> 
                 <ParentView />
             </>
         );

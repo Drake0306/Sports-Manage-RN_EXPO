@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import moment from 'moment';
 
 const WeeklyCalendar = () => {
-  const [currentDate, setCurrentDate] = useState(moment(new Date)); // September 18, 2024
+  const [currentDate, setCurrentDate] = useState(moment(new Date())); // September 18, 2024
   const scrollViewRef = useRef(null);
 
   const getDaysOfWeek = (date) => {
@@ -20,7 +20,7 @@ const WeeklyCalendar = () => {
 
   const onDayPress = (date) => {
     console.log(`Events for ${date.format('dddd, MMMM Do YYYY')}`);
-    // Implement your logic to show events for the selected date
+    setCurrentDate(date); // Update the current date to the selected date
   };
 
   return (
@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 10,
     opacity: 0.5,
-    // backgroundColor: '#f0f0f0',
   },
   currentDay: {
     backgroundColor: '#e0e0e0',

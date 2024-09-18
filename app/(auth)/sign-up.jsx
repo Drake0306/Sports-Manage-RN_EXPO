@@ -10,7 +10,7 @@ import {
   Platform,
   Alert,
 } from "react-native";
-import { Picker } from '@react-native-picker/picker';
+import { Picker } from '@react-native-picker/picker'; // Updated import
 import { useRouter } from "expo-router";
 import useSignupStore from '../store/signupStore'; // Import the signup store
 
@@ -24,7 +24,6 @@ export default function SignupScreen() {
   const [role, setRole] = useState("");
 
   const handleSignup = async () => {
-
     if (!firstname || !lastname || !email || !password || !role) {
       Alert.alert("Error", "All fields are required.");
       return;
@@ -45,10 +44,10 @@ export default function SignupScreen() {
       Alert.alert("Success", "Account created successfully!", [
         { text: "OK", onPress: () => router.navigate("/sign-in") },
       ]);
-  } catch (error) {
+    } catch (error) {
       Alert.alert("Error", error.message || 'An error occurred');
       console.error(error); // Log the error for debugging
-  }
+    }
   };
 
   return (
@@ -110,8 +109,6 @@ export default function SignupScreen() {
 }
 
 // Styles remain the same
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

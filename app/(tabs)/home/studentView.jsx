@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 
-import WeeklyCalendar from '../../components/calander/weeklyCalendar';
-import ShrinkableTrainingCard from '../../components/shrinkableTrainingCard';
-import AthleticsQRCode from '../../components/athleticsQRCode';
-import Resources from '../../components/resources';
-import Notifications from '../../components/notifications';
+import WeeklyCalendar from '@/app/components/calander/weeklyCalendar';
+import ShrinkableTrainingCard from '@/app/components/shrinkableBtn/shrinkableTrainingCard';
+import AthleticsQRCode from '@/app/components/athleticsQRCode';
+import Resources from '@/app/components/resources';
+import Notifications from '@/app/components/notifications';
 
 const tabs = ['UPCOMING', 'DONATE', 'RESOURCES'];
 
@@ -56,6 +57,14 @@ export default function StudentView() {
     fadeOut();
   };
 
+  const redirect = (url) => {
+    if(url === ''){
+      router.back();
+    } else {
+      router.navigate(url);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -63,13 +72,10 @@ export default function StudentView() {
           source={{ uri: 'https://via.placeholder.com/40' }}
           style={styles.logo}
         />
-        <View style={styles.profileContainer}>
-          <Text style={styles.profileName}>BENJIM</Text>
-          <Image
-            source={{ uri: 'https://via.placeholder.com/30' }}
-            style={styles.profileImage}
-          />
-        </View>
+        <TouchableOpacity onPress={() => router.navigate('/pages/userProfile')} style={styles.profileContainer}>
+          <Text style={styles.profileText}>JASONM</Text>
+          <View style={styles.profileImage} />
+        </TouchableOpacity>
       </View>
     
       {/* Tab */}
@@ -118,24 +124,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
+    paddingHorizontal: 25,
+    paddingVertical: 10,
   },
   logo: {
     width: 40,
     height: 40,
   },
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  profileName: {
+  profileText: {
     marginRight: 10,
-    fontWeight: 'bold',
+    fontSize: 14,
   },
   profileImage: {
     width: 30,
     height: 30,
     borderRadius: 15,
+    backgroundColor: '#ccc',
   },
   tabpadding: {
     padding: 20,

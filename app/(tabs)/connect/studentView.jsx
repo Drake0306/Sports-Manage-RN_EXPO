@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, router } from "expo-router";
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 // import { ArrowLeft, Search } from 'lucide-react-native';
 
 const coachesData = [
@@ -18,40 +18,37 @@ export default function StudentView() {
   
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        {/* <TouchableOpacity>
-          <ArrowLeft color="#000" size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Search color="#000" size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.profileButton}>
-          <Image source={{ uri: '' }} style={styles.profileImage} />
-          <Text style={styles.profileText}>JASONM</Text>
-        </TouchableOpacity> */}
-      </View>
-      <Text style={styles.title}>COACHES</Text>
-      <ScrollView style={styles.scrollView}>
-        {coachesData.map((coach) => (
-          <TouchableOpacity
-            onPress={() => redirect('/pages/chat')}
-            key={coach.id}
-            style={[
-              styles.coachCard,
-              coach.hasNotification && styles.notificationCard
-            ]}
-          >
-            <Image source={{ uri: coach.image }} style={styles.coachImage} />
-            <View style={styles.coachInfo}>
-              <Text style={styles.coachName}>{coach.name}</Text>
-              <Text style={styles.coachMessage}>{coach.message}</Text>
-            </View>
-            {coach.hasNotification && <View style={styles.notificationDot} />}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>ATHLETES</Text>
+          <TouchableOpacity onPress={() => router.navigate('/pages/userProfile')} style={styles.profileContainer}>
+            <Text style={styles.profileText}>JASONM</Text>
+            <View style={styles.profileImage} />
           </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
+        </View>
+        <Text style={styles.title}>COACHES</Text>
+        <ScrollView style={styles.scrollView}>
+          {coachesData.map((coach) => (
+            <TouchableOpacity
+              onPress={() => redirect('/pages/chat')}
+              key={coach.id}
+              style={[
+                styles.coachCard,
+                coach.hasNotification && styles.notificationCard
+              ]}
+            >
+              <Image source={{ uri: coach.image }} style={styles.coachImage} />
+              <View style={styles.coachInfo}>
+                <Text style={styles.coachName}>{coach.name}</Text>
+                <Text style={styles.coachMessage}>{coach.message}</Text>
+              </View>
+              {coach.hasNotification && <View style={styles.notificationDot} />}
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -59,35 +56,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 40,
+    paddingTop: 10,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 20,
+    padding: 20,
   },
-  profileButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 20,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-  },
-  profileImage: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    marginRight: 8,
-    backgroundColor: 'black'
-  },
-  profileText: {
+  headerText: {
+    fontSize: 18,
     fontWeight: 'bold',
   },
+  profileContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  profileText: {
+    marginRight: 10,
+    fontSize: 14,
+  },
+  profileImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#ccc',
+  },
   title: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 16,
     marginBottom: 16,

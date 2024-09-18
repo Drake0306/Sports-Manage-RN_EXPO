@@ -3,15 +3,20 @@ import { Link, router } from "expo-router";
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { useFonts } from 'expo-font';
 import { Inter_700Bold, Inter_600SemiBold } from '@expo-google-fonts/inter';
+import { ChevronRight } from 'lucide-react-native';
 
 const redirect = (url) => {
-  router.navigate(url);
+  if(url === ''){
+    router.back();
+  } else {
+    router.navigate(url);
+  }
 };
 const SportButton = ({ icon, sport, link }) => (
   <TouchableOpacity onPress={() => redirect(link)} style={styles.sportButton}>
     <View style={styles.sportIconContainer}>{icon}</View>
     <Text style={styles.sportText}>{sport}</Text>
-    {/* <ChevronRight style={styles.chevronIcon} size={24} color="#000" /> */}
+    <ChevronRight style={styles.chevronIcon} size={24} color="black" />
   </TouchableOpacity>
 );
 
@@ -35,35 +40,25 @@ const ParentView = () => {
   }
 
   const jadenSports = [
-    { name: 'BASKETBALL',link: '(tabs)/connect/coaches', icon: ""},
-    { name: 'FOOTBALL',link: '(tabs)/connect/coaches', icon: "" },
+    { name: 'BASKETBALL',link: '/(tabs)/connect/coaches', icon: ""},
+    { name: 'FOOTBALL',link: '/(tabs)/connect/coaches', icon: "" },
   ];
 
   const noelleSports = [
-    { name: 'SOCCER',link: '(tabs)/connect/coaches', icon: "" },
-    { name: 'SOFTBALL',link: '(tabs)/connect/coaches', icon: "" },
+    { name: 'SOCCER',link: '/(tabs)/connect/coaches', icon: "" },
+    { name: 'SOFTBALL',link: '/(tabs)/connect/coaches', icon: "" },
   ];
   
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* <View style={styles.header}>
-          <Text style={styles.headerText}>JASONM</Text>
-          <Image 
-            source={{ uri: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-09-11%20at%2011.43.53%E2%80%AFPM-hhB8T77FmXGBatfFJIgzSjGtfBkl9e.png' }} 
-            style={styles.profileImage} 
-          />
-        </View> */}
         <View style={styles.header}>
-          <Text style={styles.title}>ATHLETES</Text>
-          <View style={styles.profileIcon}>
-            <Text style={styles.profileName}>JASONM &nbsp;&nbsp;</Text>
-            <Image 
-              source={{ uri: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-09-11%20at%2011.39.14%E2%80%AFPM-Iyguck5eKXLsgftCzNPoXJxke25PaQ.png' }} 
-              style={styles.profileImage} 
-            />
-          </View>
+          <Text style={styles.headerText}>ATHLETES</Text>
+          <TouchableOpacity onPress={() => router.navigate('/pages/parentProfile')} style={styles.profileContainer}>
+            <Text style={styles.profileText}>JASONM</Text>
+            <View style={styles.profileImage} />
+          </TouchableOpacity>
         </View>
         <AthleteSection name="JADEN" sports={jadenSports} />
         <AthleteSection name="NOELLE" sports={noelleSports} />
@@ -75,65 +70,62 @@ const ParentView = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'white',
   },
   scrollContent: {
-    padding: 16,
+    padding: 20,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    padding: 20,
   },
   title: {
     fontFamily: 'Inter_700Bold',
     fontSize: 18,
     color: '#000',
   },
-  profileIcon: {
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF',
-    borderRadius: 20,
-    padding: 8,
   },
-  profileName: {
-    fontFamily: 'Inter_600SemiBold',
-    fontSize: 11,
-  },
-  headerText: {
-    fontFamily: 'Inter_600SemiBold',
-    fontSize: 16,
+  profileText: {
     marginRight: 10,
+    fontSize: 14,
   },
   profileImage: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    marginRight: 8,
-    backgroundColor: 'black'
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#ccc',
   },
   athleteSection: {
     marginBottom: 20,
+    marginTop: 30,
   },
   athleteName: {
     fontFamily: 'Inter_700Bold',
-    fontSize: 24,
+    fontSize: 18,
     marginBottom: 10,
   },
   sportButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f7f7f7',
     borderRadius: 25,
     padding: 15,
     marginBottom: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 3,
+    marginTop: 12,
   },
   sportIconContainer: {
     marginRight: 15,
@@ -144,7 +136,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   chevronIcon: {
-    opacity: 0.3,
+    opacity: 1,
   },
 });
 

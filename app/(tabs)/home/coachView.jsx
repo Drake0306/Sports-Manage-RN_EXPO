@@ -1,120 +1,118 @@
-import React, { useState } from 'react';
-import { Link, router } from "expo-router";
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather } from '@expo/vector-icons';
+import { Link, router } from "expo-router";
 
-const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const dates = [18, 19, 20, 21, 22, 23, 24];
+import WeeklyCalendar from '@/app/components/calander/weeklyCalendar';
+import EditableViewshrinkableTrainingCard from '@/app/components/shrinkableBtn/EditableViewshrinkableTrainingCard';
+import AthleticsQRCode from '@/app/components/athleticsQRCode';
+import Resources from '@/app/components/resources';
+import CreateAnnouncement from '@/app/components/createAnnouncement';
+import TeamRoster from '@/app/components/TeamRoster';
+
+const tabs = ['UPCOMING', 'DONATE', 'RESOURCES'];
+
+const CalanderArea = () => {
+  return (
+    <>
+      <WeeklyCalendar />
+      <EditableViewshrinkableTrainingCard />
+      <EditableViewshrinkableTrainingCard />
+      <EditableViewshrinkableTrainingCard />
+    </>
+  );
+};
 
 export default function CoachView() {
   const [activeTab, setActiveTab] = useState('UPCOMING');
-  const [announcement, setAnnouncement] = useState('');
+  const opacity = useRef(new Animated.Value(1)).current; // Animated value for opacity
+
+  const fadeOut = () => {
+    Animated.timing(opacity, {
+      toValue: 0, // Fully transparent
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      // Callback after fade-out completes
+    });
+  };
+
+  const fadeIn = () => {
+    Animated.timing(opacity, {
+      toValue: 1, // Fully visible
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      // Callback after fade-out completes
+    });
+  };
+
+  useEffect(() => {
+    fadeIn(); // Start fade-out when activeTab changes
+  }, [activeTab]);
+
+  const changeTabs = (tab) => {
+    const timer = setTimeout(() => {
+      setActiveTab(tab);
+    }, 200);
+    fadeOut();
+  };
 
   const redirect = (url) => {
-    router.navigate(url);
+    if(url === ''){
+      router.back();
+    } else {
+      router.navigate(url);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>VARSITY FOOTBALL</Text>
-          <View style={styles.profileContainer}>
-            <Text style={styles.profileName}>ROBRICH</Text>
-            <Image
-              source={{ uri: 'https://via.placeholder.com/40' }}
-              style={styles.profileImage}
-            />
-          </View>
-        </View>
-
-        {/* Navigation Tabs */}
+      <View style={styles.header}>
+        <View></View>
+        <TouchableOpacity onPress={() => redirect('/pages/userProfile')} style={styles.profileContainer}>
+          <Text style={styles.profileText}>JASONM</Text>
+          <View style={styles.profileImage} />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.titleHome}>
+        <Text style={styles.titleHomeText}>VARSITY FOOTBALL</Text>
+      </View>
+    
+      {/* Tab */}
+      <View style={styles.tabpadding}>
         <View style={styles.tabContainer}>
-          {['UPCOMING', 'DONATE', 'RESOURCES'].map((tab) => (
+          {tabs.map((tab) => (
             <TouchableOpacity
               key={tab}
-              style={[styles.tab, activeTab === tab && styles.activeTab]}
-              onPress={() => setActiveTab(tab)}
+              style={[
+                styles.tab,
+                activeTab === tab && styles.activeTab
+              ]}
+              onPress={() => changeTabs(tab)}
             >
-              <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>{tab}</Text>
+              <Text style={[
+                styles.tabText,
+                activeTab === tab && styles.activeTabText
+              ]}>
+                {tab}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
+      </View>
+      <ScrollView style={styles.scheduleContainer}>
+        <Animated.View style={[
+          styles.tabContent,
+          { opacity } // Apply opacity animation
+        ]}>
+          {activeTab === 'UPCOMING' && <CalanderArea />}
+          {activeTab === 'DONATE' && <AthleticsQRCode />}
+          {activeTab === 'RESOURCES' && <Resources />}
+        </Animated.View>
 
-        {/* Calendar */}
-        <Text style={styles.calendarTitle}>OCTOBER 18TH, 2024</Text>
-        <View style={styles.calendar}>
-          {days.map((day, index) => (
-            <View key={day} style={styles.calendarDay}>
-              <Text style={[styles.calendarDayText, index === 0 && styles.activeCalendarDay]}>{dates[index]}</Text>
-              <Text style={styles.calendarDayName}>{day}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Event */}
-        <View style={styles.eventContainer}>
-          <View style={styles.eventTimeContainer}>
-            <Text style={styles.eventTime}>05:30 PM</Text>
-            <Text style={styles.eventTime}>07:00 PM</Text>
-          </View>
-          <View style={styles.eventDetailsContainer}>
-            <Text style={styles.eventTitle}>WEIGHT TRAINING</Text>
-            <Text style={styles.eventLocation}>Loveland HS Weight Room</Text>
-          </View>
-          <TouchableOpacity onPress={() => redirect('/pages/eventPreview')}>
-            <Feather name="edit-2" size={24} color="#ccc" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Announcement Input */}
-        <View style={styles.announcementContainer}>
-          <Text style={styles.announcementTitle}>POST AN ANNOUNCEMENT</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Start typing..."
-              value={announcement}
-              onChangeText={setAnnouncement}
-              multiline
-            />
-            <TouchableOpacity style={styles.sendButton}>
-              <Feather name="arrow-right" size={24} color="#000" />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Previous Announcements */}
-        <TouchableOpacity style={styles.previousAnnouncements}>
-          <Text style={styles.previousAnnouncementsText}>PREVIOUS ANNOUNCEMENTS</Text>
-        </TouchableOpacity>
-
-        {/* Team Roster */}
-        <View style={styles.rosterContainer}>
-          <Text style={styles.rosterTitle}>TEAM ROSTER</Text>
-          <View style={styles.rosterActions}>
-            <Feather name="search" size={24} color="#000" />
-            <Feather name="sliders" size={24} color="#000" />
-            <Feather name="arrow-up-down" size={24} color="#000" />
-          </View>
-        </View>
-
-        {/* Player Card */}
-        <View style={styles.playerCard}>
-          <Image
-            source={{ uri: 'https://via.placeholder.com/60' }}
-            style={styles.playerImage}
-          />
-          <View style={styles.playerInfo}>
-            <Text style={styles.playerNumber}>1</Text>
-            <View>
-              <Text style={styles.playerName}>JADEN WALTON</Text>
-              <Text style={styles.playerDetails}>Senior | WR, DB / 6' / 175 lbs.</Text>
-            </View>
-          </View>
-        </View>
+        <CreateAnnouncement />
+        <TeamRoster />
       </ScrollView>
     </SafeAreaView>
   );
@@ -123,174 +121,155 @@ export default function CoachView() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: 20,
   },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FF3B30',
+  logo: {
+    width: 40,
+    height: 40,
   },
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  profileName: {
-    marginRight: 8,
-    fontWeight: 'bold',
+  profileText: {
+    marginRight: 10,
+    fontSize: 14,
   },
   profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#ccc',
+  },
+  tabpadding: {
+    padding: 20,
   },
   tabContainer: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    backgroundColor: '#F2F2F2',
+    borderRadius: 25,
+    padding: 4,
+    height: 50,
   },
   tab: {
     flex: 1,
-    paddingVertical: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 21,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#FF3B30',
+    backgroundColor: 'white',
   },
   tabText: {
-    color: '#888',
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#9E9E9E',
   },
   activeTabText: {
-    color: '#FF3B30',
+    color: 'black',
   },
-  calendarTitle: {
-    fontSize: 20,
+  tabContent: {
+    flex: 1,
+    overflow: 'hidden',
+  },
+  dateHeader: {
+    fontSize: 24,
     fontWeight: 'bold',
-    marginTop: 16,
-    marginLeft: 16,
+    textAlign: 'center',
+    marginVertical: 20,
   },
-  calendar: {
+  calendarContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
+    height: 1,
   },
   calendarDay: {
     alignItems: 'center',
+    marginHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+  },
+  selectedDay: {
+    backgroundColor: 'red',
   },
   calendarDayText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  activeCalendarDay: {
-    color: '#FF3B30',
-  },
-  calendarDayName: {
-    color: '#888',
-    marginTop: 4,
-  },
-  eventContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  eventTimeContainer: {
-    marginRight: 16,
-  },
-  eventTime: {
-    color: '#888',
-  },
-  eventDetailsContainer: {
-    flex: 1,
-  },
-  eventTitle: {
-    fontWeight: 'bold',
     fontSize: 16,
-  },
-  eventLocation: {
     color: '#888',
   },
-  announcementContainer: {
-    padding: 16,
-  },
-  announcementTitle: {
-    fontSize: 18,
+  calendarDateText: {
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginTop: 5,
   },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
+  selectedDayText: {
+    color: 'white',
   },
-  input: {
+  dotIndicator: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'red',
+    marginTop: 5,
+  },
+  scheduleContainer: {
     flex: 1,
-    padding: 12,
+    padding: 10,
+    backgroundColor: 'white',
   },
-  sendButton: {
-    padding: 12,
+  scheduleItem: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 10,
   },
-  previousAnnouncements: {
-    backgroundColor: '#F0F0F0',
-    padding: 16,
-    marginTop: 16,
+  scheduleItemLeft: {
+    marginRight: 15,
   },
-  previousAnnouncementsText: {
-    fontWeight: 'bold',
+  scheduleTime: {
+    fontSize: 14,
+    color: '#888',
   },
-  rosterContainer: {
+  scheduleItemRight: {
+    flex: 1,
+  },
+  scheduleItemHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
   },
-  rosterTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  rosterActions: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-  playerCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  playerImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginRight: 16,
-  },
-  playerInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  playerNumber: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginRight: 16,
-    color: '#FF3B30',
-  },
-  playerName: {
-    fontWeight: 'bold',
+  scheduleTitle: {
     fontSize: 16,
+    fontWeight: 'bold',
   },
-  playerDetails: {
+  scheduleIcon: {
+    width: 20,
+    height: 20,
+  },
+  scheduleLocation: {
+    fontSize: 14,
     color: '#888',
+    marginTop: 5,
+  },
+  titleHome: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  titleHomeText: {
+    fontFamily: 'System',
+    fontSize: 27,
+    fontWeight: '800',
+    color: '#FF0000',
+    letterSpacing: 0,
   },
 });

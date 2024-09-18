@@ -82,7 +82,7 @@ export default function LoginScreen() {
           style={styles.googleButton}
           onPress={handleGoogleLogin}
         >
-          <Ionicons name="logo-google" size={24} color="#000" />
+          <Ionicons name="logo-google" size={24} color="white" />
           <Text style={styles.googleButtonText}>Sign in with Google</Text>
         </TouchableOpacity>
 
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#34a853",
     padding: 16,
     borderRadius: 10,
     marginBottom: 16,
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     borderColor: "#E5E5EA",
   },
   googleButtonText: {
-    color: "#000000",
+    color: "white",
     fontSize: 17,
     fontWeight: "600",
     marginLeft: 10,

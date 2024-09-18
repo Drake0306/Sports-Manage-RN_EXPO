@@ -1,111 +1,118 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Switch, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { ArrowLeft } from 'lucide-react-native';
 
 export default function EventModefier() {
   const [allDay, setAllDay] = useState(false);
   const [requireAttendance, setRequireAttendance] = useState(true);
+  
+  const redirect = (url) => {
+    if(url === ''){
+      router.back();
+    } else {
+      router.navigate(url);
+    }
+  };
 
   return (
-    <ScrollView style={styles.container}>
-      {/* <View style={styles.header}>
-        <Text style={styles.title}>WEIGHT TRAINING</Text>
-        <View style={styles.iconContainer}>
-          <Feather name="activity" size={24} color="#000" />
-          <View style={styles.tealCircle} />
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.container}>
+        <TouchableOpacity style={styles.backButton} onPress={() => redirect('')}>
+          <ArrowLeft style={styles.chevronIcon} size={24} color="black" />
+        </TouchableOpacity>
+        <View style={styles.row}>
+          <Text style={styles.rowText}>WEIGHT TRAINING</Text>
         </View>
-      </View> */}
+        <View style={styles.divider} />
 
-      <View style={styles.row}>
-        <Text style={styles.rowText}>WEIGHT TRAINING</Text>
-      </View>
-      <View style={styles.divider} />
+        <View style={styles.row}>
+          <Feather name="clock" size={24} color="#000" />
+          <Text style={styles.rowText}>All day</Text>
+          <Switch
+            value={allDay}
+            onValueChange={setAllDay}
+            trackColor={{ false: "#767577", true: "#81b0ff" }}
+            thumbColor={allDay ? "#f5dd4b" : "#f4f3f4"}
+          />
+        </View>
 
-      <View style={styles.row}>
-        <Feather name="clock" size={24} color="#000" />
-        <Text style={styles.rowText}>All day</Text>
-        <Switch
-          value={allDay}
-          onValueChange={setAllDay}
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={allDay ? "#f5dd4b" : "#f4f3f4"}
-        />
-      </View>
-
-      <View style={styles.dateTimeContainer}>
-        <Text style={styles.dateText}>Thu, Sep 5</Text>
-        <View style={styles.timeContainer}>
-          <Text style={styles.timeText}>10:00</Text>
-          <View style={styles.amPmContainer}>
-            <Text style={[styles.amPmText, styles.activeAmPm]}>AM</Text>
-            <Text style={styles.amPmText}>PM</Text>
+        <View style={styles.dateTimeContainer}>
+          <Text style={styles.dateText}>Thu, Sep 5</Text>
+          <View style={styles.timeContainer}>
+            <Text style={styles.timeText}>10:00</Text>
+            <View style={styles.amPmContainer}>
+              <Text style={[styles.amPmText, styles.activeAmPm]}>AM</Text>
+              <Text style={styles.amPmText}>PM</Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      <View style={styles.dateTimeContainer}>
-        <Text style={styles.dateText}>Thu, Sep 5</Text>
-        <View style={styles.timeContainer}>
-          <Text style={styles.timeText}>11:30</Text>
-          <View style={styles.amPmContainer}>
-            <Text style={[styles.amPmText, styles.activeAmPm]}>AM</Text>
-            <Text style={styles.amPmText}>PM</Text>
+        <View style={styles.dateTimeContainer}>
+          <Text style={styles.dateText}>Thu, Sep 5</Text>
+          <View style={styles.timeContainer}>
+            <Text style={styles.timeText}>11:30</Text>
+            <View style={styles.amPmContainer}>
+              <Text style={[styles.amPmText, styles.activeAmPm]}>AM</Text>
+              <Text style={styles.amPmText}>PM</Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      <View style={styles.row}>
-        <Feather name="map-pin" size={24} color="#000" />
-        <Text style={styles.rowText}>WEIGHT ROOM</Text>
-      </View>
+        <View style={styles.row}>
+          <Feather name="map-pin" size={24} color="#000" />
+          <Text style={styles.rowText}>WEIGHT ROOM</Text>
+        </View>
 
-      <View style={styles.divider} />
+        <View style={styles.divider} />
 
-      <View style={styles.row}>
-        <Feather name="repeat" size={24} color="#888" />
-        <Text style={[styles.rowText, { color: '#888' }]}>DON'T REPEAT</Text>
-      </View>
+        <View style={styles.row}>
+          <Feather name="repeat" size={24} color="#888" />
+          <Text style={[styles.rowText, { color: '#888' }]}>DON'T REPEAT</Text>
+        </View>
 
-      <View style={styles.divider} />
+        <View style={styles.divider} />
 
-      <View style={styles.row}>
-        <Feather name="bell" size={24} color="#000" />
-        <Text style={styles.rowText}>30 MINS BEFORE</Text>
-      </View>
+        <View style={styles.row}>
+          <Feather name="bell" size={24} color="#000" />
+          <Text style={styles.rowText}>30 MINS BEFORE</Text>
+        </View>
 
-      <View style={styles.divider} />
+        <View style={styles.divider} />
 
-      <View style={styles.row}>
-        <Feather name="calendar" size={24} color="#000" />
-        <Text style={styles.rowText}>Bring your lifting shoes (flat soled)!</Text>
-      </View>
+        <View style={styles.row}>
+          <Feather name="calendar" size={24} color="#000" />
+          <Text style={styles.rowText}>Bring your lifting shoes (flat soled)!</Text>
+        </View>
 
-      <View style={styles.divider} />
+        <View style={styles.divider} />
 
-      <View style={styles.row}>
-        <Feather name="users" size={24} color="#000" />
-        <Text style={styles.rowText}>VARSITY FOOTBALL</Text>
-      </View>
+        <View style={styles.row}>
+          <Feather name="users" size={24} color="#000" />
+          <Text style={styles.rowText}>VARSITY FOOTBALL</Text>
+        </View>
 
-      <View style={styles.row}>
-        <Text style={styles.rowText}>Require Attendance</Text>
-        <Switch
-          value={requireAttendance}
-          onValueChange={setRequireAttendance}
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={requireAttendance ? "#f5dd4b" : "#f4f3f4"}
-        />
-      </View>
+        <View style={styles.row}>
+          <Text style={styles.rowText}>Require Attendance</Text>
+          <Switch
+            value={requireAttendance}
+            onValueChange={setRequireAttendance}
+            trackColor={{ false: "#767577", true: "#81b0ff" }}
+            thumbColor={requireAttendance ? "#f5dd4b" : "#f4f3f4"}
+          />
+        </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Cancel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.saveButton]}>
-          <Text style={[styles.buttonText, styles.saveButtonText]}>Save</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={() => redirect('')}>
+            <Text style={styles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, styles.saveButton]}>
+            <Text style={[styles.buttonText, styles.saveButtonText]}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -114,7 +121,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 20,
-    marginTop: 80,
   },
   header: {
     flexDirection: 'row',
@@ -207,5 +213,9 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     color: '#FFF',
+  },
+  backButton: {
+    paddingHorizontal: 5,
+    paddingBottom: 30,
   },
 });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, router } from "expo-router";
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-// import { ArrowLeft, Search } from 'lucide-react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { ArrowLeft } from 'lucide-react-native';
 
 const coachesData = [
   { id: 1, name: 'TONY ZINGALE', message: 'Great - talk soon.', image: '', hasNotification: true },
@@ -13,45 +13,51 @@ const coachesData = [
 
 export default function Coaches() {
   const redirect = (url) => {
-    router.navigate(url);
+    if(url === ''){
+      router.back();
+    } else {
+      router.navigate(url);
+    }
   };
   
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        {/* <TouchableOpacity>
-          <ArrowLeft color="#000" size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Search color="#000" size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.profileButton}>
-          <Image source={{ uri: '' }} style={styles.profileImage} />
-          <Text style={styles.profileText}>JASONM</Text>
-        </TouchableOpacity> */}
-      </View>
-      <Text style={styles.title}>COACHES</Text>
-      <ScrollView style={styles.scrollView}>
-        {coachesData.map((coach) => (
-          <TouchableOpacity
-            onPress={() => redirect('/pages/chat')}
-            key={coach.id}
-            style={[
-              styles.coachCard,
-              coach.hasNotification && styles.notificationCard
-            ]}
-          >
-            <Image source={{ uri: coach.image }} style={styles.coachImage} />
-            <View style={styles.coachInfo}>
-              <Text style={styles.coachName}>{coach.name}</Text>
-              <Text style={styles.coachMessage}>{coach.message}</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+          <View style={styles.header}>
+            <View style={styles.headerBack}>
+              <TouchableOpacity onPress={() => redirect('')}>
+                <ArrowLeft style={styles.chevronIcon} size={24} color="black" />
+              </TouchableOpacity>
+              <Text style={styles.headerText}>COACHES</Text>
             </View>
-            {coach.hasNotification && <View style={styles.notificationDot} />}
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
+            <TouchableOpacity onPress={() => router.navigate('/pages/parentProfile')} style={styles.profileContainer}>
+              <Text style={styles.profileText}>JASONM</Text>
+              <View style={styles.profileImage} />
+            </TouchableOpacity>
+          </View>
+        {/* <Text style={styles.title}>COACHES</Text> */}
+        <ScrollView style={styles.scrollView}>
+          {coachesData.map((coach) => (
+            <TouchableOpacity
+              onPress={() => redirect('/pages/chat')}
+              key={coach.id}
+              style={[
+                styles.coachCard,
+                coach.hasNotification && styles.notificationCard
+              ]}
+            >
+              <Image source={{ uri: coach.image }} style={styles.coachImage} />
+              <View style={styles.coachInfo}>
+                <Text style={styles.coachName}>{coach.name}</Text>
+                <Text style={styles.coachMessage}>{coach.message}</Text>
+              </View>
+              {coach.hasNotification && <View style={styles.notificationDot} />}
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -59,14 +65,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 40,
+    padding: 10,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 20,
+    padding: 20,
+  },
+  headerBack: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   profileButton: {
     flexDirection: 'row',
@@ -76,18 +85,27 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 8,
   },
-  profileImage: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    marginRight: 8,
-    backgroundColor: 'black'
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingLeft: 15,
+  },
+  profileContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   profileText: {
-    fontWeight: 'bold',
+    marginRight: 10,
+    fontSize: 14,
+  },
+  profileImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#ccc',
   },
   title: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 16,
     marginBottom: 16,
@@ -121,6 +139,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     marginRight: 12,
+    backgroundColor: '#ccc',
   },
   coachInfo: {
     flex: 1,

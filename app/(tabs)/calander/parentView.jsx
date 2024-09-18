@@ -3,19 +3,27 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } fr
 import { Ionicons } from '@expo/vector-icons';
 import { useHeaderHeight } from '@react-navigation/elements';
 import CalendarComponent from '../../components/calander/calendarComponent';
-import ShrinkableTrainingCard from '../../components/shrinkableTrainingCard';
+import ShrinkableTrainingCard from '../../components/shrinkableBtn/shrinkableTrainingCard';
+import { router } from 'expo-router';
 
 const ParentView = () => {
+  const redirect = (url) => {
+    if(url === ''){
+      router.back();
+    } else {
+      router.navigate(url);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollContent}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>TODAY</Text>
-          <View style={styles.profileContainer}>
+          <Text style={styles.headerText}>ATHLETES</Text>
+          <TouchableOpacity onPress={() => router.navigate('/pages/parentProfile')} style={styles.profileContainer}>
             <Text style={styles.profileText}>JASONM</Text>
             <View style={styles.profileImage} />
-          </View>
+          </TouchableOpacity>
         </View>
 
         <CalendarComponent />
@@ -24,9 +32,11 @@ const ParentView = () => {
           <Text style={styles.eventDate}>DECEMBER 6TH</Text>
 
           <ShrinkableTrainingCard />
+          <ShrinkableTrainingCard />
+          <ShrinkableTrainingCard />
 
 
-          <View style={styles.eventCard}>
+          {/* <View style={styles.eventCard}>
             <View style={styles.eventTime}>
               <Text style={styles.eventTimeText}>05:30 PM</Text>
               <Text style={styles.eventTimeText}>07:00 PM</Text>
@@ -41,7 +51,7 @@ const ParentView = () => {
             <TouchableOpacity style={styles.eventOptions}>
               <Ionicons name="ellipsis-vertical" size={24} color="#000" />
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -57,7 +67,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    padding: 10,
   },
   headerText: {
     fontSize: 18,
@@ -118,7 +128,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   eventContainer: {
-    padding: 20,
+    padding: 10,
   },
   eventDate: {
     fontSize: 16,

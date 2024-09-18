@@ -1,25 +1,41 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { FileText, ShoppingCart, Ticket } from 'lucide-react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { FileText, ShoppingCart, Ticket, Compass } from 'lucide-react-native';
 
-const Section = ({ icon, title }) => (
-  <View style={styles.section}>
-    <View style={styles.leftContent}>
+const NoteItem = ({ icon, title, placeholder }) => (
+  <View style={styles.itemContainer}>
+    <View style={styles.leftBox}>
       {icon}
       <Text style={styles.title}>{title}</Text>
     </View>
-    <View style={styles.notesContainer}>
-      <Text style={styles.notesText}>Notes...</Text>
-    </View>
+    <TextInput
+      style={styles.textArea}
+      multiline
+      numberOfLines={4}
+      placeholder={placeholder}
+      placeholderTextColor="#999"
+    />
   </View>
 );
 
 export default function Resources() {
+  const items = [
+    { icon: <FileText size={24} color="#000" />, title: "final forms" },
+    { icon: <ShoppingCart size={24} color="#000" />, title: "Spirit Shop" },
+    { icon: <Ticket size={24} color="#000" />, title: "tickets" },
+    { icon: <Compass size={24} color="#000" />, title: "Dragonfly" },
+  ];
+
   return (
     <ScrollView style={styles.container}>
-      <Section icon={<FileText stroke="black" size={24} />} title="FINAL FORMS" />
-      <Section icon={<ShoppingCart stroke="black" size={24} />} title="SPIRIT SHOP" />
-      <Section icon={<Ticket stroke="black" size={24} />} title="TICKETS" />
+      {items.map((item, index) => (
+        <NoteItem
+          key={index}
+          icon={item.icon}
+          title={item.title}
+          placeholder="Notes..."
+        />
+      ))}
     </ScrollView>
   );
 }
@@ -27,39 +43,34 @@ export default function Resources() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 16,
+    backgroundColor: '#fff',
   },
-  section: {
+  itemContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  leftBox: {
+    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
+    padding: 12,
     borderRadius: 8,
-    marginBottom: 16,
-    padding: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  leftContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    marginRight: 12,
+    flex: 1,
   },
   title: {
-    marginLeft: 12,
+    marginLeft: 8,
     fontSize: 16,
     fontWeight: 'bold',
   },
-  notesContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 4,
+  textArea: {
+    flex: 1,
+    height: 80,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
     padding: 8,
-    minWidth: 100,
-  },
-  notesText: {
-    color: '#999',
+    textAlignVertical: 'top',
   },
 });

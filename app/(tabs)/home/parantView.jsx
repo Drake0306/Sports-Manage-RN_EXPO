@@ -1,135 +1,58 @@
+import Notifications from '@/app/components/notifications';
+import React from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
-import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
-import useLoginStore from '../../store/loginStore';
-import { fetchLoginData as fetchLoginApiData } from '../../api/loginApi';
-import { Link, router } from "expo-router";
-import { useHeaderHeight } from '@react-navigation/elements';
+const athletes = [
+  {
+    id: 1,
+    name: 'JADEN WALTON',
+    school: 'LOVELAND HIGH SCHOOL',
+    sports: 'Basketball | Football',
+    image: 'https://example.com/jaden.jpg',
+    logo: 'https://example.com/loveland-logo.png',
+  },
+  {
+    id: 2,
+    name: 'NOELLE SCHEPER',
+    school: 'WALNUT HILLS HIGH SCHOOL',
+    sports: 'Soccer | Softball',
+    image: 'https://example.com/noelle.jpg',
+    logo: 'https://example.com/walnut-hills-logo.png',
+  },
+];
 
-const AthleteCard = ({ name, school, sports, imageUrl, logoUrl }) => (
-  <View style={styles.athleteCard}>
-    <Image source={{ uri: imageUrl }} style={styles.athleteImage} />
-    <View style={styles.athleteInfo}>
-      <Text style={styles.athleteName}>{name}</Text>
-      <View style={styles.schoolInfo}>
-        <Image source={{ uri: logoUrl }} style={styles.schoolLogo} />
-        <View>
-          <Text style={styles.schoolName}>{school}</Text>
-          <Text style={styles.sports}>{sports}</Text>
-        </View>
-      </View>
-    </View>
-  </View>
-);
-
-export default function ParentView() {
-  let [fontsLoaded] = useFonts({
-    Inter_400Regular,
-    Inter_600SemiBold,
-    Inter_700Bold,
-  });
-
-  const headerHeight = useHeaderHeight();
-  const [userRole, setUserRole] = useState(null); // Local state for user role
-  const [loginData, setLoginData] = useState(null); // Local state for login data
-  const [loading, setLoading] = useState(false); // Local state for loading
-  const [error, setError] = useState(null); // Local state for error
-
-  // useEffect(() => {
-  //   // Fetch login data on component mount
-  //   fetchLoginData();
-  // }, [fetchLoginData]);
-
-
-  useEffect(() => {
-    // Fetch login data on component mount
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await fetchLoginApiData(); // Fetch data from API
-        setLoginData(data); // Set login data
-        // Set user role based on the title in the response
-        if (data && typeof data.title === 'string') {
-          setUserRole('admin'); // Set user role to 'admin' if title is a string
-        } else {
-          setUserRole('guest'); // Default to 'guest' if title is not a string
-        }
-      } catch (error) {
-        setError(error.message); // Set error message
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false); // Set loading to false
-      }
-    };
-
-    fetchData(); // Call the function to fetch data
-  }, []);
-
-  if (!fontsLoaded) {
-    return null; // Return null if fonts are not loaded
-  }
-
-  if (!fontsLoaded) {
-    return null; // Return null if fonts are not loaded
-  }
-
-  const redirect = (url) => {
-    router.replace(url);
-  };
-
+export default function AthletesList() {
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <TouchableOpacity style={styles.header}onPress={() => redirect('/(screens)/parentSettings')}>
-          <Text style={styles.title}>ATHLETES</Text>
-          
-          <View style={styles.profileIcon}>
-            <Text style={styles.profileName}>JASONM &nbsp;&nbsp;</Text>
-            <Image 
-              source={{ uri: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-09-11%20at%2011.39.14%E2%80%AFPM-Iyguck5eKXLsgftCzNPoXJxke25PaQ.png' }} 
-              style={styles.profileImage} 
-            />
-          </View>
-        </TouchableOpacity>
-
-        <AthleteCard
-          name="JADEN WALTON"
-          school="LOVELAND HIGH SCHOOL"
-          sports="Basketball | Football"
-          imageUrl="/placeholder.svg?height=60&width=60"
-          logoUrl="/placeholder.svg?height=24&width=24"
-        />
-
-        <AthleteCard
-          name="NOELLE SCHEPER"
-          school="WALNUT HILLS HIGH SCHOOL"
-          sports="Soccer | Softball"
-          imageUrl="/placeholder.svg?height=60&width=60"
-          logoUrl="/placeholder.svg?height=24&width=24"
-        />
-
-        {/* Dynamic data */}
-        {loginData && (
-            <Text style={styles.text}>
-              Title: {loginData.title} {userRole  }{/* Display the title from the response */}
-            </Text>
-          )}
-
-          <Link href="/pages/notification" className='mt-3'>View Notifications</Link>
-
-        {/* <View style={styles.footer}>
-          <View style={styles.coachInfo}>
-            <Image source={{ uri: '/placeholder.svg?height=24&width=24' }} style={styles.coachIcon} />
-            <Text style={styles.coachName}>COACH TONY</Text>
-          </View>
-          <Text style={styles.coachMessage}>
-            Hey Sharks, we should definitely invest in Motiv - they gave a great pitch today!
-          </Text>
-          <Text style={styles.timestamp}>10/6/23 3:33PM</Text>
-        </View> */}
-      </ScrollView>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>ATHLETES</Text>
+          <TouchableOpacity onPress={() => router.navigate('/pages/parentProfile')} style={styles.profileContainer}>
+            <Text style={styles.profileText}>JASONM</Text>
+            <View style={styles.profileImage} />
+          </TouchableOpacity>
+        </View>
+        <ScrollView>
+          {athletes.map((athlete) => (
+            <View key={athlete.id} style={styles.card}>
+              <Image source={{ uri: athlete.image }} style={styles.athleteImage} />
+              <View style={styles.infoContainer}>
+                <Text style={styles.name}>{athlete.name}</Text>
+                <View style={styles.schoolContainer}>
+                  <Image source={{ uri: athlete.logo }} style={styles.schoolLogo} />
+                  <View>
+                    <Text style={styles.schoolName}>{athlete.school}</Text>
+                    <Text style={styles.sports}>{athlete.sports}</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+      <Notifications />
     </SafeAreaView>
   );
 }
@@ -137,65 +60,61 @@ export default function ParentView() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  scrollContent: {
-    padding: 16,
+    backgroundColor: 'white',
+    padding: 10,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 20,
+    padding: 20,
   },
-  title: {
-    fontFamily: 'Inter_700Bold',
+  headerText: {
     fontSize: 18,
-    color: '#000',
+    fontWeight: 'bold',
   },
-  profileIcon: {
+  profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF',
-    borderRadius: 20,
-    padding: 8,
+  },
+  profileText: {
+    marginRight: 10,
+    fontSize: 14,
   },
   profileImage: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    marginRight: 8,
-    backgroundColor: 'black'
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#ccc',
   },
-  profileName: {
-    fontFamily: 'Inter_600SemiBold',
-    fontSize: 11,
-  },
-  athleteCard: {
+  card: {
+    backgroundColor: '#f7f7f7',
+    borderRadius: 20,
+    padding: 13,
     flexDirection: 'row',
-    backgroundColor: '#FFF',
-    borderRadius: 12,
-    padding: 16,
     marginBottom: 16,
-    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
+    margin: 10,
   },
   athleteImage: {
-    width: 70,
-    height: 70,
-    borderRadius: 15,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     marginRight: 16,
-    backgroundColor: 'black'
   },
-  athleteInfo: {
+  infoContainer: {
     flex: 1,
   },
-  athleteName: {
-    fontFamily: 'Inter_700Bold',
+  name: {
     fontSize: 18,
-    marginBottom: 4,
+    fontWeight: 'bold',
+    marginBottom: 8,
   },
-  schoolInfo: {
+  schoolContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -205,42 +124,11 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   schoolName: {
-    fontFamily: 'Inter_600SemiBold',
-    fontSize: 12,
+    fontSize: 11,
+    fontWeight: 'bold',
   },
   sports: {
-    fontFamily: 'Inter_400Regular',
     fontSize: 11,
     color: '#666',
-  },
-  footer: {
-    backgroundColor: '#FFF',
-    borderRadius: 12,
-    padding: 16,
-    marginTop: 20,
-  },
-  coachInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  coachIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
-  },
-  coachName: {
-    fontFamily: 'Inter_700Bold',
-    fontSize: 16,
-  },
-  coachMessage: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  timestamp: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 12,
-    color: '#999',
   },
 });

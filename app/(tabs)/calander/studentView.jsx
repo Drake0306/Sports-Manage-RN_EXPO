@@ -2,21 +2,30 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useHeaderHeight } from '@react-navigation/elements';
+import { router } from 'expo-router';
 
 import CalendarComponent from '../../components/calander/calendarComponent';
-import ShrinkableTrainingCard from '../../components/shrinkableTrainingCard';
+import ShrinkableTrainingCard from '../../components/shrinkableBtn/shrinkableTrainingCard';
 import LegendCalander from '../../components/calander/legendCalander';
 
 const StudentView = () => {
+  const redirect = (url) => {
+    if(url === ''){
+      router.back();
+    } else {
+      router.navigate(url);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollContent}>
         <View style={styles.header}>
           <Text style={styles.headerText}>TODAY</Text>
-          <View style={styles.profileContainer}>
+          <TouchableOpacity onPress={() => redirect('/pages/userProfile')} style={styles.profileContainer}>
             <Text style={styles.profileText}>JASONM</Text>
             <View style={styles.profileImage} />
-          </View>
+          </TouchableOpacity>
         </View>
 
         <CalendarComponent />
@@ -26,8 +35,10 @@ const StudentView = () => {
           <Text style={styles.eventDate}>DECEMBER 6TH</Text>
 
           <ShrinkableTrainingCard />
+          <ShrinkableTrainingCard />
+          <ShrinkableTrainingCard />
 
-          <View style={styles.eventCard}>
+          {/* <View style={styles.eventCard}>
             <View style={styles.eventTime}>
               <Text style={styles.eventTimeText}>05:30 PM</Text>
               <Text style={styles.eventTimeText}>07:00 PM</Text>
@@ -42,7 +53,7 @@ const StudentView = () => {
             <TouchableOpacity style={styles.eventOptions}>
               <Ionicons name="ellipsis-vertical" size={24} color="#000" />
             </TouchableOpacity>
-          </View>
+          </View> */}
 
         </View>
       </ScrollView>
