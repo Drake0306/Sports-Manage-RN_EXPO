@@ -1,8 +1,9 @@
 import Notifications from '@/app/components/notifications';
-import React from 'react';
+import React,{useEffect} from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import { retrieveToken } from './../../(auth)/authUtils'; // Adjust the import based on your structure
 
 const athletes = [
   {
@@ -24,6 +25,21 @@ const athletes = [
 ];
 
 export default function AthletesList() {
+
+  useEffect(() => {
+    const getToken = async () => {
+      const token = await retrieveToken();
+      if (token) {
+        // Use the token for API calls or other logic
+        console.log("Retrieved Token:", token);
+      } else {
+        console.log("No token found");
+      }
+    };
+
+    getToken();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>

@@ -13,6 +13,10 @@ import {
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useRouter } from "expo-router";
 import useSignupStore from '../store/signupStore';
+import { storeToken } from './authUtils'; 
+
+
+
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -47,8 +51,12 @@ export default function SignupScreen() {
 
     try {
       const resp = await signup({ firstname, lastname, email, password, role });
+      if (resp.token) {
+        await storeToken(resp.token);
+      }
+      
       Alert.alert("Success", "Account created successfully!", [
-        { text: "OK", onPress: () => router.navigate("/sign-in") },
+        { text: "OK", onPress: () => router.navigate("/home") },
       ]);
     } catch (error) {
       Alert.alert("Error", error.message || 'An error occurred');
