@@ -1,8 +1,8 @@
 // store/signupStore.js
 import { create } from 'zustand';
-import { signupUser } from '../api/signupApi';
+import { signupUser, fetchLoginData } from '../api/signupApi';
 
-const useSignupStore = create((set) => ({
+export const useSignupStore = create((set) => ({
   signupData: {},
   loading: false,
   error: null,
@@ -12,6 +12,7 @@ const useSignupStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const data = await signupUser(userData);
+      console.log(data);
       set({ signupData: data, loading: false }); // Update store with fetched data
       return data; // Return data for the caller
     } catch (error) {
@@ -22,4 +23,22 @@ const useSignupStore = create((set) => ({
   },
 }));
 
-export default useSignupStore;
+export const useLoginStore = create((set) => ({
+  loginData: null,
+  loading: false,
+  error: null,
+
+  // Function to fetch login data
+  fetchLoginData: async (userLoginData) => {
+    set({ loading: true, error: null });
+    try {
+      const data = await fetchLoginData(userLoginData);
+      set({ loginData: data, loading: false });
+      return data;
+    } catch (error) {
+      set({ error: error.message, loading: false });
+      console.error('Error fetching login data:', error.message);
+    }
+  },
+}));
+

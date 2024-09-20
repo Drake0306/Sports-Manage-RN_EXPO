@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useRouter } from "expo-router";
-import useSignupStore from '../store/signupStore';
+import { useSignupStore } from '../store/signupStore';
 import { storeToken } from './authUtils'; 
 
 
@@ -20,7 +20,7 @@ import { storeToken } from './authUtils';
 
 export default function SignupScreen() {
   const router = useRouter();
-  const { signup, loading, error } = useSignupStore();
+  const { signup, loading } = useSignupStore();
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
@@ -33,94 +33,120 @@ export default function SignupScreen() {
     { label: 'Parent', value: 'parent' },
     { label: 'User', value: 'user' },
   ]);
+  const [error, setError] = useState("");
 
   const handleSignup = async () => {
+    setError("");
+
     if (!firstname || !lastname || !email || !password || !role) {
-      Alert.alert("Error", "All fields are required.");
+      setError("All fields are required.");
       return;
     }
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      Alert.alert("Error", "Please enter a valid email address.");
+      setError("Please enter a valid email address.");
       return;
     }
+  
     if (password.length < 6) {
-      Alert.alert("Error", "Password must be at least 6 characters long.");
+      setError("Password must be at least 6 characters long.");
       return;
     }
-
+  
     try {
       const resp = await signup({ firstname, lastname, email, password, role });
-      if (resp.token) {
-        await storeToken(resp.token);
-      }
+      if (!resp.error && resp.token) {
+
+        await storeToken(resp.token); // Store token if signup is successful
+        
+        
+        Alert.alert("Success", "Account created successfully!", [
+          { text: "OK", onPress: () => router.navigate("/home") },
+        ]);
       
-      Alert.alert("Success", "Account created successfully!", [
-        { text: "OK", onPress: () => router.navigate("/home") },
-      ]);
+      } else {
+        setError(resp.message || 'An unexpected error occurred');
+      }
     } catch (error) {
-      Alert.alert("Error", error.message || 'An error occurred');
-      console.error(error);
+      if (error.response) {
+        const errorData = await error.response.json();
+        if (errorData.errors) {
+          setError(errorData.errors.join(", "));
+        } else {
+          setError(errorData.error || 'An unexpected error occurred');
+        }
+      } else {
+        setError('An unexpected error occurred');
+      }
+      console.error('Signup error:', error);
     }
   };
+  
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        <Text style={styles.title}>Sign Up</Text>
-        {error && <Text style={styles.errorText}>{error}</Text>}
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="First Name"
-            value={firstname}
-            onChangeText={setFirstname}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Last Name"
-            value={lastname}
-            onChangeText={setLastname}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-          <View style={styles.dropdownContainer}>
-            <DropDownPicker
-              open={open}
-              value={role}
-              items={items}
-              setOpen={setOpen}
-              setValue={setRole}
-              setItems={setItems}
-              placeholder="Select Role"
-              style={styles.dropdown}
-              zIndex={9999} // Ensure it is above other components
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          <Text style={styles.title}>Sign Up</Text>
+    
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              value={firstname}
+              onChangeText={setFirstname}
             />
+            <TextInput
+              style={styles.input}
+              placeholder="Last Name"
+              value={lastname}
+              onChangeText={setLastname}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+            <View style={styles.dropdownContainer}>
+              <DropDownPicker
+                open={open}
+                value={role}
+                items={items}
+                setOpen={setOpen}
+                setValue={setRole}
+                setItems={setItems}
+                placeholder="Select Role"
+                style={styles.dropdown}
+                zIndex={9999}
+              />
+            </View>
           </View>
-        </View>
-        <TouchableOpacity style={styles.signupButton} onPress={handleSignup} disabled={loading}>
-          <Text style={styles.signupButtonText}>
-            {loading ? "Signing Up..." : "Sign Up"}
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    
+          {/* Display error below inputs */}
+          {error && <Text style={styles.errorText}>{error}</Text>}
+          {true && <Text style={styles.errorText}>This is an error message!</Text>}
+
+          <TouchableOpacity style={styles.signupButton} onPress={handleSignup} disabled={loading}>
+            <Text style={styles.signupButtonText}>
+              {loading ? "Signing Up..." : "Sign Up"}
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    
   );
 }
 

@@ -8,29 +8,63 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useLoginStore } from '../store/signupStore'; // Import login store
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { fetchLoginData, loading } = useLoginStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState(""); // Local error state
 
-  const handleLogin = () => {
-    router.navigate("/home");
-    console.log("Login pressed", { email, password, rememberMe });
+  const handleLogin = async () => {
+    // Reset error state
+    setError("");
+  
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+  
+    // Validate password
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+  
+    try {
+      const resp = await fetchLoginData({ email, password }); // Call the login API
+      if (!resp.error && resp.token) {
+        await storeToken(resp.token); // Store token if signup is successful
+      
+        Alert.alert("Success", "Login successful!", [
+          { text: "OK", onPress: () => router.navigate("/home") },
+        ]);
+      
+      
+      } else {
+        setError(resp.message || 'An error occurred');
+      }
+    } catch (error) {
+      // Catch any unexpected errors
+      setError(error.message || 'An unexpected error occurred');
+    }
   };
+  
 
   const handleMicrosoftLogin = () => {
-    console.log("Apple login pressed");
+    console.log("Microsoft login pressed");
   };
 
   const handleGoogleLogin = () => {
     console.log("Google login pressed");
   };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -38,7 +72,7 @@ export default function LoginScreen() {
     >
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Text style={styles.title}>Sign In</Text>
-
+  
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -55,21 +89,25 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             secureTextEntry
           />
+          <Text>
+          {error ? error : null} {/* Display error below inputs */}
+          </Text>
         </View>
-
+  
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Sign In</Text>
         </TouchableOpacity>
-
+  
         <TouchableOpacity style={styles.forgotPassword}>
           <Text style={styles.forgotPasswordText}>Forgot password?</Text>
         </TouchableOpacity>
-
+  
         <View style={styles.divider}>
           <View style={styles.dividerLine} />
           <Text style={styles.dividerText}>or</Text>
           <View style={styles.dividerLine} />
         </View>
+  
         <TouchableOpacity
           style={styles.microsoftButton}
           onPress={handleMicrosoftLogin}
@@ -77,7 +115,7 @@ export default function LoginScreen() {
           <Ionicons name="logo-windows" size={24} color="white" />
           <Text style={styles.microsoftButtonText}>Sign in with Microsoft</Text>
         </TouchableOpacity>
-
+  
         <TouchableOpacity
           style={styles.googleButton}
           onPress={handleGoogleLogin}
@@ -85,7 +123,7 @@ export default function LoginScreen() {
           <Ionicons name="logo-google" size={24} color="white" />
           <Text style={styles.googleButtonText}>Sign in with Google</Text>
         </TouchableOpacity>
-
+  
         <View style={styles.signupContainer}>
           <Text style={styles.signupText}>Don't have an account? </Text>
           <TouchableOpacity onPress={() => router.navigate("/sign-up")}>
@@ -95,6 +133,8 @@ export default function LoginScreen() {
       </ScrollView>
     </KeyboardAvoidingView>
   );
+  
+  
 }
 
 const styles = StyleSheet.create({
@@ -165,7 +205,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#0078D4", // Microsoft blue color
+    backgroundColor: "#0078D4",
     padding: 16,
     borderRadius: 10,
     marginBottom: 16,
@@ -206,5 +246,11 @@ const styles = StyleSheet.create({
     color: "#007AFF",
     fontSize: 17,
     fontWeight: "600",
+  },
+  errorText: {
+    color: "red",
+    marginTop: 8,
+    marginBottom: 16,
+    textAlign: "center",
   },
 });
