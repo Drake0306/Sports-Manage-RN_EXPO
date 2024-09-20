@@ -14,7 +14,8 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { useRouter } from "expo-router";
 import { useSignupStore } from '../store/signupStore';
 import { storeToken } from './authUtils'; 
-
+import { ArrowLeft } from 'lucide-react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 
@@ -84,15 +85,35 @@ export default function SignupScreen() {
   };
   
 
+  const redirect = (url) => {
+    if(url === ''){
+      router.back();
+    } else {
+      router.navigate(url);
+    }
+  };
+
   return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
         <ScrollView contentContainerStyle={styles.scrollView}>
           <Text style={styles.title}>Sign Up</Text>
-    
+          {error && <Text style={styles.errorText}>{error}</Text>}
           <View style={styles.inputContainer}>
+            <View style={{ zIndex: 1 }}>
+              <DropDownPicker
+                open={open}
+                value={role}
+                items={items}
+                setOpen={setOpen}
+                setValue={setRole}
+                setItems={setItems}
+                placeholder="Select Role"
+                style={styles.dropdown}
+              />
+            </View>
             <TextInput
               style={styles.input}
               placeholder="First Name"
@@ -120,33 +141,22 @@ export default function SignupScreen() {
               onChangeText={setPassword}
               secureTextEntry
             />
-            <View style={styles.dropdownContainer}>
-              <DropDownPicker
-                open={open}
-                value={role}
-                items={items}
-                setOpen={setOpen}
-                setValue={setRole}
-                setItems={setItems}
-                placeholder="Select Role"
-                style={styles.dropdown}
-                zIndex={9999}
-              />
-            </View>
+            
           </View>
-    
-          {/* Display error below inputs */}
           {error && <Text style={styles.errorText}>{error}</Text>}
-          {true && <Text style={styles.errorText}>This is an error message!</Text>}
-
-          <TouchableOpacity style={styles.signupButton} onPress={handleSignup} disabled={loading}>
+          <TouchableOpacity style={[styles.signupButton, { zIndex: 0 }]} onPress={handleSignup} disabled={loading}>
             <Text style={styles.signupButtonText}>
               {loading ? "Signing Up..." : "Sign Up"}
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => redirect('')} style={[styles.backButton, { zIndex: 0 }]}>
+            <ArrowLeft size={23} color="black" style={{ marginRight: 10 }} />
+            <Text style={styles.backButtonText}>
+              Back
+            </Text>
+          </TouchableOpacity>
         </ScrollView>
-      </KeyboardAvoidingView>
-    
+    </KeyboardAvoidingView>
   );
 }
 
@@ -179,7 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   dropdownContainer: {
-    zIndex: 9999, // Set a high zIndex to ensure it appears above other components
+    zIndex: 10, // Set a high zIndex to ensure it appears above other components
   },
   dropdown: {
     backgroundColor: "#f2f2f7",
@@ -191,6 +201,23 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 10,
     alignItems: "center",
+    zIndex: 0, // Lower zIndex than the dropdown
+  },
+  backButton: {
+    backgroundColor: "#bdbfc4",
+    padding: 16,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 16,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    zIndex: 0, // Lower zIndex than the dropdown
+  },
+  backButtonText: {
+    color: "black",
+    fontSize: 17,
+    fontWeight: "600",
   },
   signupButtonText: {
     color: "white",
