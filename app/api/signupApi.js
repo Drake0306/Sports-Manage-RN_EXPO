@@ -3,7 +3,7 @@ import { getMinutes } from "date-fns";
 const BASE_URL = 'http://192.168.114.196:4000'; // Replace with your actual IP address
 
 
-export const signupUser = async ({ firstname, lastname, email, password, role }) => {
+export const signupUser = async ({ firstname, lastname, email, password, role, contactNumber, dateOfBirth }) => {
   try {
     const response = await fetch(`${BASE_URL}/auth/register`, {
       method: 'POST',
@@ -16,6 +16,8 @@ export const signupUser = async ({ firstname, lastname, email, password, role })
         email,
         password,
         role,
+        contactNumber,
+        dateOfBirth,
         status: 'active',
       }),
     });

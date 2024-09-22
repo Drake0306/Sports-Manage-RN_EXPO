@@ -13,6 +13,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useLoginStore } from '../store/signupStore'; // Import login store
+import { storeToken } from './authUtils'; 
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -89,9 +90,7 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             secureTextEntry
           />
-          <Text>
-          {error ? error : null} {/* Display error below inputs */}
-          </Text>
+        {error && <Text style={styles.errorText}>{error}sfd</Text>}
         </View>
   
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
@@ -123,7 +122,6 @@ export default function LoginScreen() {
           <Ionicons name="logo-google" size={24} color="white" />
           <Text style={styles.googleButtonText}>Sign in with Google</Text>
         </TouchableOpacity>
-  
         <View style={styles.signupContainer}>
           <Text style={styles.signupText}>Don't have an account? </Text>
           <TouchableOpacity onPress={() => router.navigate("/sign-up")}>
@@ -181,7 +179,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   forgotPasswordText: {
-    color: "#007AFF",
+    color: "#FF0000",
     fontSize: 17,
     fontWeight: "400",
   },
@@ -248,7 +246,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   errorText: {
-    color: "red",
+    color: "#FF0000!important",
     marginTop: 8,
     marginBottom: 16,
     textAlign: "center",
