@@ -10,39 +10,59 @@ import {
   Platform,
   Alert,
 } from "react-native";
-import DropDownPicker from 'react-native-dropdown-picker';
-import DateTimePicker from '@react-native-community/datetimepicker'; // Import the date picker
+import DropDownPicker from "react-native-dropdown-picker";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRouter } from "expo-router";
-import { useSignupStore } from '../store/signupStore';
-import { storeToken } from './authUtils'; 
-import { ArrowLeft } from 'lucide-react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSignupStore } from "../store/signupStore";
+import { storeToken } from "./authUtils";
+import { ArrowLeft } from "lucide-react-native";
 
 export default function SignupScreen() {
   const router = useRouter();
-  const { signup, loading } = useSignupStore();
+  const { signup, sendOtp, loading } = useSignupStore();
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState(null);
-  const [contactNumber, setContactNumber] = useState(""); // State for contact number
-  const [dateOfBirth, setDateOfBirth] = useState(new Date()); // State for date of birth
-  const [showDatePicker, setShowDatePicker] = useState(false); // State to control date picker visibility
-  const [open, setOpen] = useState(false);
+  const [countryCode, setCountryCode] = useState(null);
+  const [contactNumber, setContactNumber] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [openRole, setOpenRole] = useState(false);
+  const [openCode, setOpenCode] = useState(false);
   const [items, setItems] = useState([
-    { label: 'Select Role', value: null, disabled: true },
-    { label: 'Coach', value: 'coach' },
-    { label: 'Parent', value: 'parent' },
-    { label: 'User', value: 'user' },
+    { label: "Select Role", value: null, disabled: true },
+    { label: "Coach", value: "coach" },
+    { label: "Parent", value: "parent" },
+    { label: "User", value: "user" },
   ]);
+
+  const countryCodeItems = [
+    { label: "+1 (USA)", value: "1" },
+    { label: "+44 (UK)", value: "44" },
+    { label: "+91 (India)", value: "+91" },
+    // Add more country codes as needed
+  ];
+
   const [error, setError] = useState("");
 
   const handleSignup = async () => {
     setError("");
 
     // Validate new fields
-    if (!firstname || !lastname || !email || !password || !role || !contactNumber || !dateOfBirth) {
+    if (
+      !firstname ||
+      !lastname ||
+      !email ||
+      !password ||
+      !role ||
+      !contactNumber ||
+      !dateOfBirth ||
+      !countryCode
+    ) {
       setError("All fields are required.");
       return;
     }
@@ -58,32 +78,50 @@ export default function SignupScreen() {
       return;
     }
 
-    const contactRegex = /^\d{10}$/; // Simple validation for a 10-digit mobile number
+    const contactRegex = /^\d{10}$/;
     if (!contactRegex.test(contactNumber)) {
       setError("Please enter a valid mobile number.");
       return;
     }
 
     try {
-      const resp = await signup({ firstname, lastname, email, password, role, contactNumber, dateOfBirth });
+      const resp = await signup({
+        firstname,
+        lastname,
+        email,
+        password,
+        role,
+        contactNumber,
+        dateOfBirth,
+      });
+
       if (!resp.error && resp.token) {
-        await storeToken(resp.token);
-        Alert.alert("Success", "Account created successfully!", [
-          { text: "OK", onPress: () => router.navigate("/home") },
-        ]);
+        const fullContactNumber = `${countryCode}${contactNumber}`;
+        const otpResp = await sendOtp(fullContactNumber);
+        await AsyncStorage.setItem("@phone", fullContactNumber); // Use a string key for storage
+
+
+        if (otpResp.success) {
+          await storeToken(resp.token);
+          Alert.alert(
+            "Success",
+            "Account created successfully! Please check your SMS for the OTP.",
+            [
+              {
+                text: "OK",
+                onPress: () => router.navigate(`/OtpVerificationScreen`),
+
+              },
+            ]
+          );
+        } else {
+          setError(otpResp.message || "Failed to send OTP");
+        }
       } else {
-        setError(resp.message || 'An unexpected error occurred');
+        setError(resp.message || "An unexpected error occurred");
       }
     } catch (error) {
-      // Error handling...
-    }
-  };
-
-  const redirect = (url) => {
-    if(url === '') {
-      router.back();
-    } else {
-      router.navigate(url);
+      setError(error.message || "An unexpected error occurred");
     }
   };
 
@@ -101,18 +139,16 @@ export default function SignupScreen() {
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Text style={styles.title}>Sign Up</Text>
         <View style={styles.inputContainer}>
-          <View style={{ zIndex: 1 }}>
-            <DropDownPicker
-              open={open}
-              value={role}
-              items={items}
-              setOpen={setOpen}
-              setValue={setRole}
-              setItems={setItems}
-              placeholder="Select Role"
-              style={styles.dropdown}
-            />
-          </View>
+          <DropDownPicker
+            open={openRole}
+            value={role}
+            items={items}
+            setOpen={setOpenRole}
+            setValue={setRole}
+            setItems={setItems}
+            placeholder="Select Role"
+            style={styles.dropdown}
+          />
           <TextInput
             style={styles.input}
             placeholder="First Name"
@@ -140,17 +176,34 @@ export default function SignupScreen() {
             onChangeText={setPassword}
             secureTextEntry
           />
-          <TextInput
+          <View style={styles.mobileInputContainer}>
+            <DropDownPicker
+              open={openCode}
+              value={countryCode}
+              items={countryCodeItems}
+              setOpen={setOpenCode}
+              setValue={setCountryCode}
+              placeholder="STD"
+              style={styles.dropdown}
+              containerStyle={{ width: 80 }} // Fixed width for the dropdown
+            />
+            <TextInput
+              style={styles.mobileInput}
+              placeholder="Mobile Number"
+              value={contactNumber}
+              onChangeText={setContactNumber}
+              keyboardType="phone-pad"
+              maxLength={15}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={() => setShowDatePicker(true)}
             style={styles.input}
-            placeholder="Mobile Number"
-            value={contactNumber}
-            onChangeText={setContactNumber}
-            keyboardType="phone-pad"
-            maxLength={10} // Limit to 10 digits
-          />
-          <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
-            <Text style={{ color: dateOfBirth ? '#000' : '#888' }}>
-              {dateOfBirth ? dateOfBirth.toLocaleDateString() : 'Select Date of Birth'}
+          >
+            <Text style={{ color: dateOfBirth ? "#000" : "#888" }}>
+              {dateOfBirth
+                ? dateOfBirth.toLocaleDateString()
+                : "Select Date of Birth"}
             </Text>
           </TouchableOpacity>
           {showDatePicker && (
@@ -162,17 +215,23 @@ export default function SignupScreen() {
             />
           )}
         </View>
+
         {error && <Text style={styles.errorText}>{error}</Text>}
-        <TouchableOpacity style={[styles.signupButton, { zIndex: 0 }]} onPress={handleSignup} disabled={loading}>
+        <TouchableOpacity
+          style={styles.signupButton}
+          onPress={handleSignup}
+          disabled={loading}
+        >
           <Text style={styles.signupButtonText}>
             {loading ? "Signing Up..." : "Sign Up"}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => redirect('')} style={[styles.backButton, { zIndex: 0 }]}>
+        <TouchableOpacity
+          onPress={() => redirect("")}
+          style={styles.backButton}
+        >
           <ArrowLeft size={23} color="black" style={{ marginRight: 10 }} />
-          <Text style={styles.backButtonText}>
-            Back
-          </Text>
+          <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -183,6 +242,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+  },
+  mobileInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  mobileInput: {
+    flex: 1, // Take remaining space
+    backgroundColor: "#f2f2f7",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderRadius: 10,
+    marginLeft: 10, // Space between dropdown and input
+    fontSize: 17,
+  },
+  
+  countryCodeText: {
+    fontSize: 17,
+    marginRight: 10,
   },
   scrollView: {
     flexGrow: 1,
@@ -210,7 +288,8 @@ const styles = StyleSheet.create({
   dropdown: {
     backgroundColor: "#f2f2f7",
     borderRadius: 10,
-    marginBottom: 16,
+    height:60,
+    marginBottom: 1,
   },
   signupButton: {
     backgroundColor: "#007AFF",
@@ -225,9 +304,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginTop: 16,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
     zIndex: 0,
   },
   backButtonText: {

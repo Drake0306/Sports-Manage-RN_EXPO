@@ -31,6 +31,26 @@ export const signupUser = async ({ firstname, lastname, email, password, role, c
   }
 };
 
+
+export const sendOtp = async (contactNumber) => {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/send-otp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ contactNumber }),
+    });
+
+    const data = await response.json();
+    return data; 
+  } catch (error) {
+    console.error('Error sending OTP:', error.message);
+    throw error; 
+  }
+};
+
+
 export const fetchLoginData = async ({email,password}) => {
   try {
     const response = await fetch(`${BASE_URL}/auth/login`, {
@@ -47,5 +67,24 @@ export const fetchLoginData = async ({email,password}) => {
   } catch (error) {
     console.error('Error fetching data:', error.message);
     throw error; // Propagate the error
+  }
+};
+// signupApi.js
+
+export const verifyOtp = async (otp,phone) => {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/verify-otp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ otp,contactNumber:phone }),
+    });
+
+    const data = await response.json();
+    return data; 
+  } catch (error) {
+    console.error('Error verifying OTP:', error.message);
+    throw error; 
   }
 };

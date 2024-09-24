@@ -1,6 +1,6 @@
 // store/signupStore.js
 import { create } from 'zustand';
-import { signupUser, fetchLoginData } from '../api/signupApi';
+import { signupUser, fetchLoginData, sendOtp, verifyOtp as verifyOtpApi } from '../api/signupApi';
 
 export const useSignupStore = create((set) => ({
   signupData: {},
@@ -21,6 +21,30 @@ export const useSignupStore = create((set) => ({
       throw error; // Throw error to be caught in the calling function
     }
   },
+  sendOtp: async (contactNumber) => {
+    set({ loading: true, error: null });
+    try {
+      const data = await sendOtp(contactNumber);
+      set({ loading: false });
+      return data; // Return the response to check for success
+    } catch (error) {
+      set({ error: error.message, loading: false });
+      throw error; // Propagate the error for handling in the component
+    }
+  },
+
+  verifyOtp: async (otp,phone) => {
+    set({ loading: true, error: null });
+    try {
+      const data = await verifyOtpApi(otp,phone); // Call the API to verify OTP
+      set({ loading: false });
+      return data; 
+    } catch (error) {
+      set({ error: error.message, loading: false });
+      throw error; 
+    }
+  },
+
 }));
 
 export const useLoginStore = create((set) => ({
