@@ -12,8 +12,24 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import * as AuthSession from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
 import { useLoginStore } from '../store/signupStore'; // Import login store
 import { storeToken } from './authUtils'; 
+
+WebBrowser.maybeCompleteAuthSession();
+
+// Discovery URLs for Google and Microsoft
+const googleDiscovery = {
+  authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
+  tokenEndpoint: 'https://oauth2.googleapis.com/token',
+};
+
+const microsoftDiscovery = {
+  authorizationEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+  tokenEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
+};
+
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -21,6 +37,79 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // Local error state
+  const [userInfo, setUserInfo] = useState(null); // User info From OAuth
+
+  // Google OAuth Function
+  const googleAuth = async () => {
+    try {
+      const clientId = '963918752399-hdsnjr0e6786b0i5c8sva5ijgno5d5bs.apps.googleusercontent.com'; // IOS APPS TODO Android needed
+      const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
+
+      const request = new AuthSession.AuthRequest({
+        clientId,
+        scopes: ['openid', 'profile', 'email'],
+        redirectUri,
+      });
+
+      const authResponse = await request.promptAsync(googleDiscovery);
+
+      if (authResponse.type === 'success') {
+        const tokenResponse = await fetch(googleDiscovery.tokenEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `code=${authResponse.params.code}&client_id=${clientId}&redirect_uri=${redirectUri}&grant_type=authorization_code`,
+        });
+
+        const tokenResult = await tokenResponse.json();
+        const { access_token } = tokenResult;
+
+        const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${access_token}` },
+        });
+
+        const user = await userInfoResponse.json();
+        setUserInfo({ email: user.email, token: access_token });
+      }
+    } catch (error) {
+      console.error('Google Authentication Error:', error);
+    }
+  };
+
+  // Microsoft OAuth Function
+  const microsoftAuth = async () => {
+    try {
+      const clientId = '29d4dc7b-ed5b-44cb-a789-250f11ccdeee'; // TODO NEED TO CHANGE
+      const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
+
+      const request = new AuthSession.AuthRequest({
+        clientId,
+        scopes: ['openid', 'profile', 'email', 'User.Read'],
+        redirectUri,
+      });
+
+      const authResponse = await request.promptAsync(microsoftDiscovery);
+
+      if (authResponse.type === 'success') {
+        const tokenResponse = await fetch(microsoftDiscovery.tokenEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `code=${authResponse.params.code}&client_id=${clientId}&redirect_uri=${redirectUri}&grant_type=authorization_code`,
+        });
+
+        const tokenResult = await tokenResponse.json();
+        const { access_token } = tokenResult;
+
+        const userInfoResponse = await fetch('https://graph.microsoft.com/v1.0/me', {
+          headers: { Authorization: `Bearer ${access_token}` },
+        });
+
+        const user = await userInfoResponse.json();
+        setUserInfo({ email: user.mail || user.userPrincipalName, token: access_token });
+      }
+    } catch (error) {
+      console.error('Microsoft Authentication Error:', error);
+    }
+  };
 
   const handleLogin = async () => {
     // Reset error state
@@ -63,9 +152,6 @@ export default function LoginScreen() {
     console.log("Microsoft login pressed");
   };
 
-  const handleGoogleLogin = () => {
-    console.log("Google login pressed");
-  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -109,7 +195,7 @@ export default function LoginScreen() {
   
         <TouchableOpacity
           style={styles.microsoftButton}
-          onPress={handleMicrosoftLogin}
+          onPress={microsoftAuth}
         >
           <Ionicons name="logo-windows" size={24} color="white" />
           <Text style={styles.microsoftButtonText}>Sign in with Microsoft</Text>
@@ -117,7 +203,7 @@ export default function LoginScreen() {
   
         <TouchableOpacity
           style={styles.googleButton}
-          onPress={handleGoogleLogin}
+          onPress={googleAuth}
         >
           <Ionicons name="logo-google" size={24} color="white" />
           <Text style={styles.googleButtonText}>Sign in with Google</Text>
