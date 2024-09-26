@@ -10,10 +10,10 @@ import {
 import { useRouter } from "expo-router";
 import { useSignupStore } from "../store/signupStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 export default function OtpVerificationScreen() {
   const router = useRouter();
-  const { verifyOtp } = useSignupStore(); // Add this function to your store
+
+  const { verifyOtp, sendOtp } = useSignupStore(); // Add this function to your store
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [phone, setPhone] = useState("");
@@ -34,13 +34,10 @@ export default function OtpVerificationScreen() {
 
   const handleVerifyOtp = async () => {
     setError("");
-
     if (otp.length !== 6) {
-      // Assuming OTP length is 6
       setError("Please enter a valid OTP.");
       return;
     }
-
     try {
       const resp = await verifyOtp(otp, phone); // Call the OTP verification method
       if (resp.success) {
@@ -55,6 +52,25 @@ export default function OtpVerificationScreen() {
     }
   };
 
+  const handleResendOtp = async () => {
+    try {
+      const otpResp = await sendOtp(phone);
+      if (otpResp.success) {
+        Alert.alert("Success", "Please check your SMS for the OTP.", [
+          {
+            text: "OK",
+          },
+        ]);
+      } else {
+        setError(otpResp.message || "Failed to send OTP");
+      }
+    } catch (error) {
+      setError("An error occurred while resending the OTP.");
+      console.error("Error sending OTP:", error);
+    }
+  };
+  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Verify OTP</Text>
@@ -67,6 +83,10 @@ export default function OtpVerificationScreen() {
         maxLength={6} // Assuming OTP length is 6
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
+      <TouchableOpacity onPress={handleResendOtp}>
+        <Text style={styles.resendOtpText}>Resend OTP</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity style={styles.verifyButton} onPress={handleVerifyOtp}>
         <Text style={styles.verifyButtonText}>Verify OTP</Text>
       </TouchableOpacity>
@@ -79,6 +99,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 20,
+  },
+  resendOtpText: {
+    color: '#007BFF',
+    fontSize: 16,
+    textDecorationLine: 'underline', // Underline for a link effect
+    textAlign: 'center', // Center the text
+    marginTop: 10,
+    marginBottom:15, // Add some spacing above
   },
   title: {
     fontSize: 24,
