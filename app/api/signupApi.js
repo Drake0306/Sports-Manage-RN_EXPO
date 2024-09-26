@@ -1,4 +1,5 @@
 import { getMinutes } from "date-fns";
+import { createAuthHeaders } from './../(auth)/authUtils'; // Adjust the import based on your structure
 
 const BASE_URL = 'http://192.168.114.196:4000'; // Replace with your actual IP address
 
@@ -71,14 +72,14 @@ export const fetchLoginData = async ({email,password}) => {
 };
 // signupApi.js
 
-export const verifyOtp = async (otp,phone) => {
+export const verifyOtp = async (otp, phone) => {
   try {
-    const response = await fetch(`${BASE_URL}/auth/verify-otp`, {
+    const headers = await createAuthHeaders(); // Get headers with token
+
+    const response = await fetch(`${BASE_URL}/user/verify-otp`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ otp,contactNumber:phone }),
+      headers: headers,
+      body: JSON.stringify({ otp, contactNumber: phone }),
     });
 
     const data = await response.json();
