@@ -112,7 +112,6 @@ export default function LoginScreen() {
   };
 
   const handleLogin = async () => {
-    // Reset error state
     setError("");
   
     // Validate email
