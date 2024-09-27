@@ -33,9 +33,9 @@ const microsoftDiscovery = {
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { fetchLoginData, loading } = useLoginStore();
+  const { fetchLoginData } = useLoginStore();
   const { sendOtp } = useSignupStore();
-
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // Local error state
@@ -125,17 +125,20 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     setError("");
+    setLoading(true); // Start loading
 
     // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address.");
+      setLoading(false); // Stop loading on error
       return;
     }
 
     // Validate password
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
+      setLoading(false); // Stop loading on error
       return;
     }
 
@@ -169,6 +172,8 @@ export default function LoginScreen() {
     } catch (error) {
       // Catch any unexpected errors
       setError(error.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false); // Stop loading regardless of the outcome
     }
   };
 
@@ -204,7 +209,9 @@ export default function LoginScreen() {
         </View>
 
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Sign In</Text>
+        <Text style={styles.loginButtonText}>
+            {loading ? "Signing In..." : "Sign In"}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.forgotPassword}>

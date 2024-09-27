@@ -83,6 +83,7 @@ export default function SignupScreen() {
       setError("Please enter a valid mobile number.");
       return;
     }
+    const fullContactNumber = `${countryCode}${contactNumber}`;
 
     try {
       const resp = await signup({
@@ -91,12 +92,11 @@ export default function SignupScreen() {
         email,
         password,
         role,
-        contactNumber,
+        fullContactNumber,
         dateOfBirth,
       });
 
       if (!resp.error && resp.token) {
-        const fullContactNumber = `${countryCode}${contactNumber}`;
         const otpResp = await sendOtp(fullContactNumber);
         await AsyncStorage.setItem("@phone", fullContactNumber); // Use a string key for storage
 
@@ -147,7 +147,7 @@ export default function SignupScreen() {
             setValue={setRole}
             setItems={setItems}
             placeholder="Select Role"
-            style={styles.dropdown}
+            style={styles.dropdownrole}
           />
           <TextInput
             style={styles.input}
@@ -290,6 +290,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height:60,
     marginBottom: 1,
+  },
+  dropdownrole: {
+    backgroundColor: "#f2f2f7",
+    borderRadius: 10,
+    height:60,
+    marginBottom: 10,
   },
   signupButton: {
     backgroundColor: "#007AFF",

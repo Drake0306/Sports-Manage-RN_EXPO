@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Alert } from 'react-native';
 import { ArrowLeft, ChevronRight, Plus } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { removeToken } from "./../(auth)/authUtils";
+
 
 export default function UserProfile() {
   const Redirect = (url) => {
@@ -11,6 +13,29 @@ export default function UserProfile() {
       router.navigate(url);
     }
   }
+
+
+  
+  const logout = async () => {
+    try {
+      await removeToken(); // Remove the token
+      Alert.alert(
+        "Logged Out",
+        "You have successfully logged out.",
+        [
+          {
+            text: "OK",
+            onPress: () => Redirect('/(auth)/sign-in'), // Navigate to the sign-in page
+          },
+        ]
+      );
+    } catch (error) {
+      console.error("Error during logout", error);
+      // Optionally, show an alert for logout error
+      Alert.alert("Error", "There was a problem logging you out. Please try again.");
+    }
+  };
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -51,9 +76,11 @@ export default function UserProfile() {
           <TouchableOpacity>
             <Text style={styles.changePassword}>Change password</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => Redirect('/(auth)/sign-in')}>
+          <TouchableOpacity onPress={logout}>
             <Text style={styles.logOut}>Log out</Text>
           </TouchableOpacity>
+
+ 
         </View>
       </SafeAreaView>
     </ScrollView>

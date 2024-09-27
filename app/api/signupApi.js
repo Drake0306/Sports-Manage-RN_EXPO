@@ -4,7 +4,7 @@ import { createAuthHeaders } from './../(auth)/authUtils'; // Adjust the import 
 const BASE_URL = 'http://192.168.114.196:4000'; // Replace with your actual IP address
 
 
-export const signupUser = async ({ firstname, lastname, email, password, role, contactNumber, dateOfBirth }) => {
+export const signupUser = async ({ firstname, lastname, email, password, role, fullContactNumber, dateOfBirth }) => {
   try {
     const response = await fetch(`${BASE_URL}/auth/register`, {
       method: 'POST',
@@ -17,7 +17,7 @@ export const signupUser = async ({ firstname, lastname, email, password, role, c
         email,
         password,
         role,
-        contactNumber,
+        contactNumber:fullContactNumber,
         dateOfBirth,
         status: 'active',
       }),
