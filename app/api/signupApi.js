@@ -70,7 +70,28 @@ export const fetchLoginData = async ({email,password}) => {
     throw error; // Propagate the error
   }
 };
-// signupApi.js
+
+
+export const logoutUser = async () => {
+  const headers = await createAuthHeaders(); // Create headers with the JWT token
+
+  try {
+    const response = await fetch(`${BASE_URL}/user/logout`, {
+      method: 'POST',
+      headers,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to log out');
+    }
+
+    return await response.json(); // Assuming the server returns a JSON response
+  } catch (error) {
+    console.error('Error during logout:', error.message);
+    throw error; // Propagate the error for handling in the component
+  }
+};
+
 
 export const verifyOtp = async (otp, phone) => {
   try {

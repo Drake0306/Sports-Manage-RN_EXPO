@@ -1,11 +1,17 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Alert } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Alert, ActivityIndicator } from 'react-native';
 import { ArrowLeft, ChevronRight, Plus } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { removeToken } from "./../(auth)/authUtils";
+import { useSignupStore } from './../store/signupStore'; // Adjust path as needed
+
 
 
 export default function UserProfile() {
+  const { logout  } = useSignupStore();
+  const [loading, setLoading] = useState(false); // Local loading state
+
+
   const Redirect = (url) => {
     if(url === ''){
       router.back();
@@ -15,27 +21,37 @@ export default function UserProfile() {
   }
 
 
+  // In your UserProfile component
+
+const handleLogout = async () => {
   
-  const logout = async () => {
-    try {
-      await removeToken(); // Remove the token
+  setLoading(true); // Start the loader
+  try {
+    const response = await logout(); // Call the logout function from the store
+    await removeToken(); // Remove the token from storage
+
+    if (response.error) {
+      Alert.alert("Error", response.message); // Handle logout error
+    } else {
       Alert.alert(
         "Logged Out",
-        "You have successfully logged out.",
+        response.message,
         [
           {
             text: "OK",
-            onPress: () => Redirect('/(auth)/sign-in'), // Navigate to the sign-in page
+            onPress: () => Redirect('/(auth)/sign-in'),
           },
         ]
       );
-    } catch (error) {
-      console.error("Error during logout", error);
-      // Optionally, show an alert for logout error
-      Alert.alert("Error", "There was a problem logging you out. Please try again.");
     }
-  };
-  
+  } catch (error) {
+    console.error("Error during logout", error);
+    Alert.alert("Error", "There was a problem logging you out. Please try again.");
+  } finally {
+    setLoading(false); // Stop the loader
+  }
+};
+
 
   return (
     <ScrollView style={styles.container}>
@@ -71,17 +87,21 @@ export default function UserProfile() {
         <TouchableOpacity style={styles.optionButton}>
           <Text style={styles.optionButtonText}>💡 Submit a feature request</Text>
         </TouchableOpacity>
-        
         <View style={styles.footer}>
           <TouchableOpacity>
             <Text style={styles.changePassword}>Change password</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={logout}>
+          <TouchableOpacity onPress={handleLogout} disabled={loading}>
             <Text style={styles.logOut}>Log out</Text>
           </TouchableOpacity>
-
- 
         </View>
+
+        {loading && (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+            <Text>Logging out...</Text>
+          </View>
+        )}
       </SafeAreaView>
     </ScrollView>
   );
@@ -91,6 +111,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  }, 
+  loaderContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
   },
   header: {
     paddingHorizontal: 16,

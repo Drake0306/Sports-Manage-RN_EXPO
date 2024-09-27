@@ -1,6 +1,6 @@
 // store/signupStore.js
 import { create } from 'zustand';
-import { signupUser, fetchLoginData, sendOtp, verifyOtp as verifyOtpApi } from '../api/signupApi';
+import { signupUser, fetchLoginData, sendOtp, verifyOtp as verifyOtpApi,logoutUser } from '../api/signupApi';
 
 export const useSignupStore = create((set) => ({
   signupData: {},
@@ -42,6 +42,18 @@ export const useSignupStore = create((set) => ({
     } catch (error) {
       set({ error: error.message, loading: false });
       throw error; 
+    }
+  },
+
+  logout: async () => {
+    set({ loading: true, error: null });
+    try {
+      await logoutUser(); // Call the logout API
+      set({ loading: false }); // Reset loading state
+      return true; // Indicate success
+    } catch (error) {
+      set({ error: error.message, loading: false });
+      throw error; // Propagate error
     }
   },
 
