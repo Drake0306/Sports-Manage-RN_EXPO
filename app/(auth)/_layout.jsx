@@ -8,6 +8,7 @@ export default function HomeLayout() {
         tabBarShowLabel: false,
       }}>
       <Stack.Screen name="sign-in" />
+      <Stack.Screen name="authScreen" />
     </Stack>
   );
 }
