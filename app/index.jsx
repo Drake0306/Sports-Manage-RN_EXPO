@@ -5,7 +5,7 @@ import { Text } from "react-native";
 const StartPage = () => {
   const [loading, setLoading] = useState(false); // Local state for loading
   const [error, setError] = useState(null); // Local state for error
-  const [url, setURL] = useState('/authScreen');
+  const [url, setURL] = useState('/home');
 
   
 

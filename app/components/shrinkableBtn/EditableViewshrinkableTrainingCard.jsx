@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
-import { ChevronUpIcon, ChevronDownIcon, CircleCheck, CircleX, Edit } from 'lucide-react-native';
+import { ChevronUpIcon, ChevronDownIcon, CircleCheck, CircleX, Edit, Pencil } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function EditableViewshrinkableTrainingCard() {
   const [isExpanded, setIsExpanded] = useState(false); // Collapsed by default
@@ -49,7 +50,7 @@ export default function EditableViewshrinkableTrainingCard() {
               </View>
             </View>
             <TouchableOpacity onPress={() => redirect('/pages/eventPreview')}>
-                <Edit size={24} color="black" />
+                <Pencil size={20} color="black" />
             </TouchableOpacity>
           </View>
 
@@ -57,24 +58,31 @@ export default function EditableViewshrinkableTrainingCard() {
       </TouchableOpacity>
       {isExpanded && (
         <View style={styles.content}>
+          <Text style={styles.footer}>07:00 PM</Text>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>WEIGHT TRAINING</Text>
             <TouchableOpacity>
-              <Edit size={28} color="black" />
+              <Pencil size={20} color="black" />
             </TouchableOpacity>
           </View>
-          <Text style={styles.subtitle}>Loveland HS Weight Room</Text>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.button]}>
-              <CircleCheck size={44} color="#4CAF50" />
-              <Text style={styles.btnGreenText}>35</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button]}>
-              <CircleX size={44} color="#fb6453" />
-              <Text style={styles.btnRedText}>0</Text>
-            </TouchableOpacity>
+          <View style={styles.contentContainer}>
+            <Text style={styles.subtitle}>Loveland HS Weight Room</Text>
+            <Text style={styles.subtitleTwo}>ATTENDEES</Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={[styles.button]}>
+                <CircleCheck size={30} color="#4CAF50" />
+                <Text style={styles.btnGreenText}>35</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button]}>
+                <CircleX size={30} color="#fb6453" />
+                <Text style={styles.btnRedText}>0</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button]} onPress={() => redirect('/pages/attendeeList')}>
+                <Ionicons name="list-outline" size={30} color="black" />
+                <Text style={styles.btnText}>View List</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <Text style={styles.footer}>07:00 PM</Text>
         </View>
       )}
     </Animated.View>
@@ -87,11 +95,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     marginBottom: 10,
-    shadowColor: '#000',
+    // shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    // shadowRadius: 4,
+    // elevation: 3,
     overflow: 'hidden',
   },
   header: {
@@ -143,15 +151,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 4,
+    paddingHorizontal: 22,
+
   },
   title: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#666',
     marginBottom: 12,
+  },
+  subtitleTwo: {
+    fontSize: 13,
+    color: 'black',
+    marginBottom: 8,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -179,19 +194,29 @@ const styles = StyleSheet.create({
   },
   footer: {
     fontSize: 13,
-    color: '#666',
-    textAlign: 'right',
+    color: 'black',
+    textAlign: 'left',
+    paddingHorizontal: 22,
   },
   btnGreenText: {
     color: '#4CAF50', 
-    fontSize: 25, 
+    fontSize: 18, 
     marginTop: 5, 
     marginLeft: 10
   },
   btnRedText: {
     color: '#fb6453', 
-    fontSize: 25, 
+    fontSize: 18, 
     marginTop: 5, 
     marginLeft: 10
   },
+  btnText: {
+    color: 'black', 
+    fontSize: 13, 
+    marginTop: 5, 
+    marginLeft: 10
+  },
+  contentContainer: {
+    paddingHorizontal: 22,
+  }
 });

@@ -3,8 +3,6 @@ import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Animated }
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
-import CalendarEvents from 'react-native-calendar-events';
-import moment from 'moment';
 
 import WeeklyCalendar from '@/app/components/calander/weeklyCalendar';
 import EditableViewshrinkableTrainingCard from '@/app/components/shrinkableBtn/EditableViewshrinkableTrainingCard';
@@ -15,25 +13,20 @@ import TeamRoster from '@/app/components/TeamRoster';
 
 const tabs = ['UPCOMING', 'DONATE', 'RESOURCES'];
 
-const CalanderArea = ({ events }) => {
-  const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
-
-  const filteredEvents = events.filter(event => event.date === selectedDate);
-
+const CalanderArea = () => {
   return (
-    <View>
-      <WeeklyCalendar onDateChange={setSelectedDate} />
-      {filteredEvents.map((event, index) => (
-        <EditableViewshrinkableTrainingCard key={index} title={event.title} />
-      ))}
-    </View>
+    <>
+      <WeeklyCalendar />
+      <EditableViewshrinkableTrainingCard />
+      <EditableViewshrinkableTrainingCard />
+      <EditableViewshrinkableTrainingCard />
+    </>
   );
 };
 
 export default function CoachView() {
   const [activeTab, setActiveTab] = useState('UPCOMING');
   const opacity = useRef(new Animated.Value(1)).current; // Animated value for opacity
-  const [events, setEvents] = useState([]); // State to hold calendar events
 
   const fadeOut = () => {
     Animated.timing(opacity, {
@@ -73,25 +66,6 @@ export default function CoachView() {
       router.navigate(url);
     }
   };
-
-  // Fetch calendar events when the component mounts
-  useEffect(() => {
-    const fetchCalendarEvents = async () => {
-      const permission = await CalendarEvents.requestPermissions();
-      if (permission === 'authorized') {
-        const startDate = moment().startOf('week').toISOString();
-        const endDate = moment().endOf('week').toISOString();
-        const fetchedEvents = await CalendarEvents.fetchAllEvents(startDate, endDate);
-        const formattedEvents = fetchedEvents.map(event => ({
-          date: moment(event.startDate).format('YYYY-MM-DD'),
-          title: event.title,
-        }));
-        setEvents(formattedEvents);
-      }
-    };
-
-    fetchCalendarEvents();
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -141,7 +115,7 @@ export default function CoachView() {
           styles.tabContent,
           { opacity } // Apply opacity animation
         ]}>
-          {activeTab === 'UPCOMING' && <CalanderArea events={events} />}
+          {activeTab === 'UPCOMING' && <CalanderArea />}
           {activeTab === 'DONATE' && <AthleticsQRCode />}
           {activeTab === 'RESOURCES' && <Resources />}
         </Animated.View>

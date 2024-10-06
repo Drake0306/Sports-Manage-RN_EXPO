@@ -8,15 +8,7 @@ const months = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-// Sample event data
-const eventsData = {
-  '2024-10-05': ['Event 1', 'Event 2', 'Event 3'],
-  '2024-10-10': ['Event 4'],
-  '2024-10-15': ['Event 5', 'Event 6'],
-  // Add more events as needed
-};
-
-export default function CalendarComponent({ onDateChange }) {
+export default function CalendarComponent() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -44,26 +36,15 @@ export default function CalendarComponent({ onDateChange }) {
         ))}
         {daysInMonth.map((day) => {
           const isSelected = day.toDateString() === selectedDate.toDateString();
-          const dateString = day.toISOString().split('T')[0];
-          const events = eventsData[dateString] || [];
-
           return (
             <TouchableOpacity
               key={day.getDate()}
               style={[styles.dayItem, isSelected && styles.selectedDay]}
-              onPress={() => {
-                setSelectedDate(day);
-                onDateChange(day); // Call the date change function
-              }}
+              onPress={() => setSelectedDate(day)}
             >
               <Text style={[styles.dayText, isSelected && styles.selectedDayText]}>
                 {day.getDate()}
               </Text>
-              <View style={styles.dotsContainer}>
-                {events.slice(0, 3).map((_, index) => (
-                  <View key={index} style={styles.dot} />
-                ))}
-              </View>
             </TouchableOpacity>
           );
         })}
@@ -147,17 +128,5 @@ const styles = StyleSheet.create({
   },
   selectedDayText: {
     color: 'white',
-  },
-  dotsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 2,
-  },
-  dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#4CAF50',
-    marginHorizontal: 1,
   },
 });

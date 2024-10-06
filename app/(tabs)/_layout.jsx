@@ -2,16 +2,17 @@ import { View, Text, Image } from 'react-native'
 import React from 'react'
 import { Tabs, Redirect } from 'expo-router';
 import { icons } from '@/constants';
-import { HomeIcon, MessageCircleMoreIcon, CalendarDaysIcon } from 'lucide-react-native';
+import { HomeIcon, MessageCircleMoreIcon, CalendarDaysIcon, ShoppingBagIcon } from 'lucide-react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const TabIcon = ({ icon, name, focused, color }) => {
     return (
         <View className="items-center justify-center gap-2">
             <Image
                 source={icon}
-                resizeMode='contain'
                 tintColor={color}
                 className='w-12 h-12'
+                resizeMode='contain'
             />
         </View>
     )
@@ -33,7 +34,7 @@ export default () => {
                         borderRightWidth: 0,
                         borderBottomWidth: 0,
 
-                        height: 110
+                        height: 80
                     },
                 }}
             >
@@ -45,7 +46,11 @@ export default () => {
                         // tabBarShowLabel: false,
                         tabBarLabel: 'Home',
                         tabBarIcon: ({ color, focused }) => (
-                            <HomeIcon size={50} color={color} />
+                            <Ionicons
+                                name='home-outline'
+                                size={45}
+                                color={color}
+                            />
                           ),                      
                         // tabBarIcon: ({ color, focused }) => (
                         //     <TabIcon
@@ -64,7 +69,11 @@ export default () => {
                         title: "Connect",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
-                            <MessageCircleMoreIcon size={50} color={color} />
+                            <Ionicons
+                                name='chatbubble-ellipses-outline'
+                                size={45}
+                                color={color}
+                            />
                           ),
                       
                         // tabBarIcon: ({ color, focused }) => (
@@ -84,7 +93,35 @@ export default () => {
                         title: "Calander",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
-                            <CalendarDaysIcon size={50} color={color} />
+                            <Ionicons
+                                name='calendar-number-outline'
+                                size={45}
+                                color={color}
+                            />
+                          ),
+                        // tabBarIcon: ({ color, focused }) => (
+                        //     <TabIcon
+                        //         icon={icons.calendar}
+                        //         color={color}
+                        //         focused={focused}
+                        //         name="Calander"
+                        //     />
+                        // )
+                    }}
+                />
+
+
+                <Tabs.Screen
+                    name="shop"
+                    options={{
+                        title: "Shop",
+                        headerShown: false,
+                        tabBarIcon: ({ color, focused }) => (
+                            <Ionicons
+                                name='bag-handle-outline'
+                                size={45}
+                                color={color}
+                            />
                           ),
                         // tabBarIcon: ({ color, focused }) => (
                         //     <TabIcon

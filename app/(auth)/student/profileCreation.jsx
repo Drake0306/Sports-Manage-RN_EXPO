@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
-import { useRouter
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useRouter} from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 
- } from 'expo-router';
 export default function ProfileCreation() {
   const router = useRouter();
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -18,7 +19,7 @@ export default function ProfileCreation() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <TouchableOpacity onPress={() => refirect('')} style={styles.backButton}>
-          <Text style={styles.backButtonText}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         
         <Text style={styles.title}>CREATE AN ACCOUNT</Text>

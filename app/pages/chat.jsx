@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Link, router } from "expo-router";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Chat() {
   const [messages, setMessages] = useState([
