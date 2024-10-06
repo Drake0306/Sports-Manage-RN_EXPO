@@ -3,114 +3,16 @@ import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Animated }
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
-import WeeklyCalendar from '@/app/components/calander/weeklyCalendar';
-import ShrinkableTrainingCard from '@/app/components/shrinkableBtn/shrinkableTrainingCard';
-import AthleticsQRCode from '@/app/components/athleticsQRCode';
-import Resources from '@/app/components/resources';
-import Notifications from '@/app/components/notifications';
-
-const tabs = ['UPCOMING', 'DONATE', 'RESOURCES'];
-
-const CalanderArea = () => {
-  return (
-    <>
-      <WeeklyCalendar />
-      <ScrollView style={styles.scheduleContainer}>
-        <ShrinkableTrainingCard />
-      </ScrollView>
-    </>
-  );
-};
 
 export default function StudentView() {
-  const [activeTab, setActiveTab] = useState('UPCOMING');
-  const opacity = useRef(new Animated.Value(1)).current; // Animated value for opacity
-
-  const fadeOut = () => {
-    Animated.timing(opacity, {
-      toValue: 0, // Fully transparent
-      duration: 200,
-      useNativeDriver: true,
-    }).start(() => {
-      // Callback after fade-out completes
-    });
-  };
-
-  const fadeIn = () => {
-    Animated.timing(opacity, {
-      toValue: 1, // Fully visible
-      duration: 200,
-      useNativeDriver: true,
-    }).start(() => {
-      // Callback after fade-out completes
-    });
-  };
-
-  useEffect(() => {
-    fadeIn(); // Start fade-out when activeTab changes
-  }, [activeTab]);
-
-  const changeTabs = (tab) => {
-    const timer = setTimeout(() => {
-      setActiveTab(tab);
-    }, 200);
-    fadeOut();
-  };
-
-  const redirect = (url) => {
-    if(url === ''){
-      router.back();
-    } else {
-      router.navigate(url);
-    }
-  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={{ uri: 'https://via.placeholder.com/40' }}
-          style={styles.logo}
-        />
-        <TouchableOpacity onPress={() => router.navigate('/pages/userProfile')} style={styles.profileContainer}>
-          <Text style={styles.profileText}>JASONM</Text>
-          <View style={styles.profileImage} />
-        </TouchableOpacity>
+        <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}} >
+            Comming Soon
+        </Text>
       </View>
-    
-      {/* Tab */}
-      <View style={styles.tabpadding}>
-        <View style={styles.tabContainer}>
-          {tabs.map((tab) => (
-            <TouchableOpacity
-              key={tab}
-              style={[
-                styles.tab,
-                activeTab === tab && styles.activeTab
-              ]}
-              onPress={() => changeTabs(tab)}
-            >
-              <Text style={[
-                styles.tabText,
-                activeTab === tab && styles.activeTabText
-              ]}>
-                {tab}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-      <Animated.View style={[
-        styles.tabContent,
-        { opacity } // Apply opacity animation
-      ]}>
-        {activeTab === 'UPCOMING' && <CalanderArea />}
-        {activeTab === 'DONATE' && <AthleticsQRCode />}
-        {activeTab === 'RESOURCES' && <Resources />}
-      </Animated.View>
-
-      <Notifications />
     </SafeAreaView>
   );
 }

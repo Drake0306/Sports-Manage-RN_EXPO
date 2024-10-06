@@ -1,128 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link, router } from "expo-router";
-import { Ionicons } from '@expo/vector-icons';
-
-import WeeklyCalendar from '@/app/components/calander/weeklyCalendar';
-import EditableViewshrinkableTrainingCard from '@/app/components/shrinkableBtn/EditableViewshrinkableTrainingCard';
-import AthleticsQRCode from '@/app/components/athleticsQRCode';
-import Resources from '@/app/components/resources';
-import CreateAnnouncement from '@/app/components/createAnnouncement';
-import TeamRoster from '@/app/components/TeamRoster';
-
-const tabs = ['UPCOMING', 'DONATE', 'RESOURCES'];
-
-const CalanderArea = () => {
-  return (
-    <>
-      <WeeklyCalendar />
-      <EditableViewshrinkableTrainingCard />
-      <EditableViewshrinkableTrainingCard />
-      <EditableViewshrinkableTrainingCard />
-    </>
-  );
-};
 
 export default function CoachView() {
-  const [activeTab, setActiveTab] = useState('UPCOMING');
-  const opacity = useRef(new Animated.Value(1)).current; // Animated value for opacity
-
-  const fadeOut = () => {
-    Animated.timing(opacity, {
-      toValue: 0, // Fully transparent
-      duration: 200,
-      useNativeDriver: true,
-    }).start(() => {
-      // Callback after fade-out completes
-    });
-  };
-
-  const fadeIn = () => {
-    Animated.timing(opacity, {
-      toValue: 1, // Fully visible
-      duration: 200,
-      useNativeDriver: true,
-    }).start(() => {
-      // Callback after fade-out completes
-    });
-  };
-
-  useEffect(() => {
-    fadeIn(); // Start fade-out when activeTab changes
-  }, [activeTab]);
-
-  const changeTabs = (tab) => {
-    const timer = setTimeout(() => {
-      setActiveTab(tab);
-    }, 200);
-    fadeOut();
-  };
-
-  const redirect = (url) => {
-    if(url === ''){
-      router.back();
-    } else {
-      router.navigate(url);
-    }
-  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <View></View>
-        <TouchableOpacity onPress={() => redirect('/pages/userProfile')} style={styles.profileContainer}>
-          <Text style={styles.profileText}>JASONM</Text>
-          <View style={styles.profileImage} />
-        </TouchableOpacity>
+        <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}} >
+            Comming Soon
+        </Text>
       </View>
-      <View style={styles.titleHome}>
-        <TouchableOpacity>
-          <Ionicons name="add-outline" size={35} style={{marginTop: 0}} color="black" />
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-          <Ionicons name="refresh-outline" size={30} style={{marginTop: 2}} color="black" />
-        </TouchableOpacity>
-
-        <Text style={styles.titleHomeText}>VARSITY FOOTBALL</Text>
-      </View>
-    
-      {/* Tab */}
-      <View style={styles.tabpadding}>
-        <View style={styles.tabContainer}>
-          {tabs.map((tab) => (
-            <TouchableOpacity
-              key={tab}
-              style={[
-                styles.tab,
-                activeTab === tab && styles.activeTab
-              ]}
-              onPress={() => changeTabs(tab)}
-            >
-              <Text style={[
-                styles.tabText,
-                activeTab === tab && styles.activeTabText
-              ]}>
-                {tab}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-      <ScrollView style={styles.scheduleContainer}>
-        <Animated.View style={[
-          styles.tabContent,
-          { opacity } // Apply opacity animation
-        ]}>
-          {activeTab === 'UPCOMING' && <CalanderArea />}
-          {activeTab === 'DONATE' && <AthleticsQRCode />}
-          {activeTab === 'RESOURCES' && <Resources />}
-        </Animated.View>
-
-        <CreateAnnouncement />
-        <TeamRoster />
-      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -134,7 +22,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },

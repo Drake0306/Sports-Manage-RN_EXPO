@@ -34,7 +34,7 @@ export default () => {
                         borderRightWidth: 0,
                         borderBottomWidth: 0,
 
-                        height: 80
+                        height: 110
                     },
                 }}
             >
@@ -48,7 +48,7 @@ export default () => {
                         tabBarIcon: ({ color, focused }) => (
                             <Ionicons
                                 name='home-outline'
-                                size={45}
+                                size={50}
                                 color={color}
                             />
                           ),                      
@@ -71,7 +71,7 @@ export default () => {
                         tabBarIcon: ({ color, focused }) => (
                             <Ionicons
                                 name='chatbubble-ellipses-outline'
-                                size={45}
+                                size={50}
                                 color={color}
                             />
                           ),
@@ -95,7 +95,7 @@ export default () => {
                         tabBarIcon: ({ color, focused }) => (
                             <Ionicons
                                 name='calendar-number-outline'
-                                size={45}
+                                size={50}
                                 color={color}
                             />
                           ),
@@ -119,7 +119,7 @@ export default () => {
                         tabBarIcon: ({ color, focused }) => (
                             <Ionicons
                                 name='bag-handle-outline'
-                                size={45}
+                                size={50}
                                 color={color}
                             />
                           ),

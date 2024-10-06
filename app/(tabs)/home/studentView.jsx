@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { Link, router } from "expo-router";
+import { Ionicons } from '@expo/vector-icons';
+import CalendarEvents from 'react-native-calendar-events';
+import moment from 'moment';
 
 import WeeklyCalendar from '@/app/components/calander/weeklyCalendar';
 import ShrinkableTrainingCard from '@/app/components/shrinkableBtn/shrinkableTrainingCard';
@@ -11,20 +14,25 @@ import Notifications from '@/app/components/notifications';
 
 const tabs = ['UPCOMING', 'DONATE', 'RESOURCES'];
 
-const CalanderArea = () => {
+const CalanderArea = ({ events }) => {
+  const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
+
+  const filteredEvents = events.filter(event => event.date === selectedDate);
+
   return (
-    <>
-      <WeeklyCalendar />
-      <ScrollView style={styles.scheduleContainer}>
-        <ShrinkableTrainingCard />
-      </ScrollView>
-    </>
+    <View>
+      <WeeklyCalendar onDateChange={setSelectedDate} />
+      {filteredEvents.map((event, index) => (
+        <ShrinkableTrainingCard key={index} title={event.title} />
+      ))}
+    </View>
   );
 };
 
 export default function StudentView() {
   const [activeTab, setActiveTab] = useState('UPCOMING');
   const opacity = useRef(new Animated.Value(1)).current; // Animated value for opacity
+  const [events, setEvents] = useState([]); // State to hold calendar events
 
   const fadeOut = () => {
     Animated.timing(opacity, {
@@ -65,18 +73,35 @@ export default function StudentView() {
     }
   };
 
+  // Fetch calendar events when the component mounts
+  useEffect(() => {
+    const fetchCalendarEvents = async () => {
+      const permission = await CalendarEvents.requestPermissions();
+      if (permission === 'authorized') {
+        const startDate = moment().startOf('week').toISOString();
+        const endDate = moment().endOf('week').toISOString();
+        const fetchedEvents = await CalendarEvents.fetchAllEvents(startDate, endDate);
+        const formattedEvents = fetchedEvents.map(event => ({
+          date: moment(event.startDate).format('YYYY-MM-DD'),
+          title: event.title,
+        }));
+        setEvents(formattedEvents);
+      }
+    };
+
+    fetchCalendarEvents();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={{ uri: 'https://via.placeholder.com/40' }}
-          style={styles.logo}
-        />
-        <TouchableOpacity onPress={() => router.navigate('/pages/userProfile')} style={styles.profileContainer}>
+        <View></View>
+        <TouchableOpacity onPress={() => redirect('/pages/userProfile')} style={styles.profileContainer}>
           <Text style={styles.profileText}>JASONM</Text>
           <View style={styles.profileImage} />
         </TouchableOpacity>
       </View>
+      
     
       {/* Tab */}
       <View style={styles.tabpadding}>
@@ -100,16 +125,17 @@ export default function StudentView() {
           ))}
         </View>
       </View>
+      <ScrollView style={styles.scheduleContainer}>
+        <Animated.View style={[
+          styles.tabContent,
+          { opacity } // Apply opacity animation
+        ]}>
+          {activeTab === 'UPCOMING' && <CalanderArea events={events} />}
+          {activeTab === 'DONATE' && <AthleticsQRCode />}
+          {activeTab === 'RESOURCES' && <Resources />}
+        </Animated.View>
 
-      <Animated.View style={[
-        styles.tabContent,
-        { opacity } // Apply opacity animation
-      ]}>
-        {activeTab === 'UPCOMING' && <CalanderArea />}
-        {activeTab === 'DONATE' && <AthleticsQRCode />}
-        {activeTab === 'RESOURCES' && <Resources />}
-      </Animated.View>
-
+      </ScrollView>
       <Notifications />
     </SafeAreaView>
   );
@@ -124,16 +150,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 25,
-    paddingVertical: 10,
+    padding: 20,
   },
   logo: {
     width: 40,
     height: 40,
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
   },
   profileContainer: {
     flexDirection: 'row',
@@ -261,5 +282,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#888',
     marginTop: 5,
+  },
+  titleHome: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 20,
+  },
+  titleHomeText: {
+    fontFamily: 'System',
+    fontSize: 27,
+    fontWeight: '800',
+    color: '#FF0000',
+    letterSpacing: 0,
   },
 });

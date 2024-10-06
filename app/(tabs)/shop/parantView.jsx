@@ -5,70 +5,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { retrieveToken } from './../../(auth)/authUtils'; // Adjust the import based on your structure
 
-const athletes = [
-  {
-    id: 1,
-    name: 'JADEN WALTON',
-    school: 'LOVELAND HIGH SCHOOL',
-    sports: 'Basketball | Football',
-    image: 'https://example.com/jaden.jpg',
-    logo: 'https://example.com/loveland-logo.png',
-  },
-  {
-    id: 2,
-    name: 'NOELLE SCHEPER',
-    school: 'WALNUT HILLS HIGH SCHOOL',
-    sports: 'Soccer | Softball',
-    image: 'https://example.com/noelle.jpg',
-    logo: 'https://example.com/walnut-hills-logo.png',
-  },
-];
-
 export default function AthletesList() {
-
-  useEffect(() => {
-    const getToken = async () => {
-      const token = await retrieveToken();
-      if (token) {
-        // Use the token for API calls or other logic
-        console.log("Retrieved Token:", token);
-      } else {
-        console.log("No token found");
-      }
-    };
-
-    getToken();
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>ATHLETES</Text>
-          <TouchableOpacity onPress={() => router.navigate('/pages/parentProfile')} style={styles.profileContainer}>
-            <Text style={styles.profileText}>JASONM</Text>
-            <View style={styles.profileImage} />
-          </TouchableOpacity>
-        </View>
-        <ScrollView>
-          {athletes.map((athlete) => (
-            <View key={athlete.id} style={styles.card}>
-              <Image source={{ uri: athlete.image }} style={styles.athleteImage} />
-              <View style={styles.infoContainer}>
-                <Text style={styles.name}>{athlete.name}</Text>
-                <View style={styles.schoolContainer}>
-                  <Image source={{ uri: athlete.logo }} style={styles.schoolLogo} />
-                  <View>
-                    <Text style={styles.schoolName}>{athlete.school}</Text>
-                    <Text style={styles.sports}>{athlete.sports}</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
+      <View style={styles.header}>
+        <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}} >
+            Comming Soon
+        </Text>
       </View>
-      <Notifications />
     </SafeAreaView>
   );
 }
