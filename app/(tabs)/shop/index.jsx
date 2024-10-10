@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import ParentView from './parentView';
+import ParentView from './parantView';
 import CoachView from './coachView';
 import StudentView from './studentView';
 
@@ -8,7 +8,7 @@ export default function index () {
     const data = 1;
     if(data == 1) {
         return (
-            <>
+            <> 
                 <CoachView />
             </>
         );

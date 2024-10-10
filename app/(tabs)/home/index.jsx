@@ -9,21 +9,21 @@ export default function index () {
     if(data == 1) {
         return (
             <> 
-                <ParentView />
+                <CoachView />
             </>
         );
     }
     else if(data == 2) {
         return (
             <>
-                <CoachView />
+                <StudentView />
             </>
         );
     }
     else {
         return (
             <>
-                <StudentView />
+                <ParentView />
             </>
         );
     }

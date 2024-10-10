@@ -1,8 +1,11 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { MoveLeft } from 'lucide-react-native';
 import { Link, router } from "expo-router";
+import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 const announcements = [
   {
@@ -56,16 +59,20 @@ const AnnouncementItem = ({ item }) => (
 );
 
 const redirect = (url) => {
+  if(url === ''){
+    router.back();
+  } else {
     router.navigate(url);
-  };
+  }
+};
 
 export default function AnnouncementUI() {
   return (
     <SafeAreaView style={styles.container}>
         <View style={styles.titleHeader}>
-            <TouchableOpacity onPress={() => redirect('/(tabs)/home')}>
-                <MoveLeft size={24} color="#000" />
-            </TouchableOpacity>
+          <TouchableOpacity onPress={() => redirect('')}>
+            <Ionicons name="arrow-back" size={24} color="black" />
+          </TouchableOpacity>
             <Text style={styles.title}>ANNOUNCEMENTS</Text>
         </View>
         <FlatList
@@ -82,8 +89,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 20, // Added padding to the sides
-    paddingVertical: 20, // Ensure padding on top and bottom as well
+    paddingHorizontal: 10, // Added padding to the sides
   },
   titleHeader: {
     flexDirection: 'row',

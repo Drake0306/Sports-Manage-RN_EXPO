@@ -1,10 +1,44 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import CalendarEvents from 'react-native-calendar-events';
 import moment from 'moment';
 
-const WeeklyCalendar = () => {
-  const [currentDate, setCurrentDate] = useState(moment(new Date())); // September 18, 2024
+const WeeklyCalendar = ({ onDateChange }) => {
+  const [currentDate, setCurrentDate] = useState(moment(new Date()));
+  const [events, setEvents] = useState([]);
   const scrollViewRef = useRef(null);
+  
+  
+  useEffect(() => {
+    // Request calendar permission and fetch events
+    const fetchCalendarEvents = async () => {
+      try {
+        const permission = await CalendarEvents.requestPermissions();
+        
+        if (permission === 'authorized') {
+          // Fetch events for the current week
+          const startDate = currentDate.clone().startOf('week').toISOString();
+          const endDate = currentDate.clone().endOf('week').toISOString();
+          
+          const fetchedEvents = await CalendarEvents.fetchAllEvents(startDate, endDate);
+          
+          // Format the events
+          const formattedEvents = fetchedEvents.map(event => ({
+            date: moment(event.startDate).format('YYYY-MM-DD'), // Ensure date format is correct
+            title: event.title,
+          }));
+
+          setEvents(formattedEvents);
+        } else {
+          console.log('Calendar permission denied');
+        }
+      } catch (error) {
+        console.error('Error fetching calendar events:', error);
+      }
+    };
+
+    fetchCalendarEvents();
+  }, [currentDate]); // Re-fetch events if currentDate changes
 
   const getDaysOfWeek = (date) => {
     const start = moment(date).startOf('week'); // Start from Sunday or customize to Monday
@@ -13,14 +47,15 @@ const WeeklyCalendar = () => {
 
   const weekDays = getDaysOfWeek(currentDate);
 
+  // Function to check if there are events for the given date
   const hasEvent = (date) => {
-    // Mock event check - replace with your actual event checking logic
-    return [3, 5, 6].includes(date.day());
+    return events.some(event => moment(event.date).isSame(date, 'day'));
   };
 
   const onDayPress = (date) => {
     console.log(`Events for ${date.format('dddd, MMMM Do YYYY')}`);
-    setCurrentDate(date); // Update the current date to the selected date
+    setCurrentDate(date);
+    onDateChange(date.format('YYYY-MM-DD')); // Notify parent component about the selected date
   };
 
   return (

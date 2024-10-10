@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Alert, ActivityIndicator } from 'react-native';
-import { ArrowLeft, ChevronRight, Plus } from 'lucide-react-native';
-import { router } from 'expo-router';
+import React, { useState, useEffect }, { useState } from "react";
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert, Share  , Alert, ActivityIndicator } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { Link, router } from "expo-router";
 import { removeToken } from "./../(auth)/authUtils";
 import { useSignupStore } from './../store/signupStore'; // Adjust path as needed
 
@@ -12,13 +14,39 @@ export default function UserProfile() {
   const [loading, setLoading] = useState(false); // Local loading state
 
 
-  const Redirect = (url) => {
+  const [timeLeft, setTimeLeft] = useState(29);
+  const [code, setCode] = useState(123456);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 29));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const copyToClipboard = () => {
+    Clipboard.setString(String(code)); // Copy the code to clipboard
+    Alert.alert('Copied', 'Code copied to clipboard!'); // Show a confirmation message
+  };
+
+  const shareCode = async () => {
+    try {
+      await Share.share({
+        message: `${code}`, // Message to share
+      });
+    } catch (error) {
+      Alert.alert('Error', 'Could not share the code.'); // Error handling
+    }
+  };
+
+  const redirect = (url) => {
     if(url === ''){
       router.back();
     } else {
       router.navigate(url);
     }
-  }
+  };
 
 
   // In your UserProfile component
@@ -54,136 +82,250 @@ const handleLogout = async () => {
 
 
   return (
-    <ScrollView style={styles.container}>
-      <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => Redirect('')}>
-          <ArrowLeft color="#000" size={24} />
-        </TouchableOpacity>
-      </View>
-        <View style={styles.profileHeader}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.container}>
+      <TouchableOpacity onPress={() => redirect('')}>
+        <Ionicons name="arrow-back" size={24} color="black" />
+      </TouchableOpacity>
+        <View style={styles.header}>
           <Image
-            source={{ uri: 'https://example.com/profile-image.jpg' }}
+            source={{ uri: "/placeholder.svg?height=80&width=80" }}
             style={styles.profileImage}
           />
-          <Text style={styles.name}>ROB RICHARDSON</Text>
-          <Text style={styles.team}>LOVELAND TIGERS</Text>
-          <Text style={styles.role}>FOOTBALL HEAD COACH</Text>
-        </View>
-        
-        <View style={styles.quoteContainer}>
-          <Text style={styles.quote}>"Mind sharper than a needle kit!" 🧠🪡</Text>
-          <Text style={styles.quote}>Coach RR 🏈</Text>
-        </View>
-        
-        <TouchableOpacity style={styles.editButton} onPress={() => Redirect('/pages/userEditProfile')}>
-          <Text style={styles.editButtonText}>EDIT PROFILE</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.optionButton}>
-          <Text style={styles.optionButtonText}>🐞 Report a bug</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.optionButton}>
-          <Text style={styles.optionButtonText}>💡 Submit a feature request</Text>
-        </TouchableOpacity>
-        <View style={styles.footer}>
-          <TouchableOpacity>
-            <Text style={styles.changePassword}>Change password</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleLogout} disabled={loading}>
-            <Text style={styles.logOut}>Log out</Text>
-          </TouchableOpacity>
+          <View style={styles.headerButtons}>
+            <TouchableOpacity style={styles.button} onPress={() => redirect('/pages/teamCodeEntry')}>
+              <Ionicons name="people-outline" size={20} color="black" />
+              <Text style={styles.buttonText}>JOIN A TEAM</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => redirect('/pages/userEditProfile')}>
+              <Ionicons name="create-outline" size={20} color="black" />
+              <Text style={styles.buttonText}>EDIT PROFILE</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
-        {loading && (
-          <View style={styles.loaderContainer}>
-            <ActivityIndicator size="large" color="#0000ff" />
-            <Text>Logging out...</Text>
+        <Text style={styles.name}>ROB RICHARDSON</Text>
+        <Text style={styles.team}>LOVELAND TIGERS</Text>
+        <Text style={styles.position}>FOOTBALL HEAD COACH</Text>
+
+        <View style={styles.quoteContainer}>
+          <Text style={styles.quote}>
+            "Mind sharper than a needle kit!" 🧠💉
+            Coach RR 🏈
+          </Text>
+        </View>
+
+        <View style={styles.teamCodeContainer}>
+          <Text style={styles.teamCodeLabel}>TEAM CODE:</Text>
+          <Text style={styles.teamCodeValue}>VARSITY FOOTBALL</Text>
+        </View>
+
+        <View style={styles.codeContainer}>
+          <Text style={styles.code}>{code}</Text>
+          <View style={styles.codeButtons}>
+            <TouchableOpacity style={styles.codeButton} onPress={copyToClipboard}>
+              <Ionicons name="copy-outline" size={24} color="black" />
+              <Text style={styles.codeButtonText}>COPY CODE</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.codeButtonShare} onPress={shareCode}>
+              <Ionicons name="share-social-outline" size={24} color="black" />
+            </TouchableOpacity>
           </View>
-        )}
-      </SafeAreaView>
-    </ScrollView>
+        </View>
+
+        <Text style={styles.refreshText}>{timeLeft}s until refresh</Text>
+
+        <TouchableOpacity style={styles.option} onPress={() => redirect('/pages/bugReport')}>
+          <Ionicons name="bug-outline" size={24} color="black" />
+          <Text style={styles.optionText}>Report a bug</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.option} onPress={() => redirect('/pages/requestAFeature')}>
+          <Ionicons name="bulb-outline" size={24} color="black" />
+          <Text style={styles.optionText}>Submit a feature request</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.option} onPress={() => redirect('/pages/privacyPolicy')}>
+          <Ionicons name="shield-outline" size={24} color="black" />
+          <Text style={styles.optionText}>Privacy Policy</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.changePassword}>
+          <Text style={styles.changePasswordText}>Change password</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.logOut}>
+          <Text style={styles.logOutText}>Log out</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
   }, 
   loaderContainer: {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20,
+    padding: 10,
   },
   header: {
-    paddingHorizontal: 16,
-  },
-  profileHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    padding: 20,
+    marginBottom: 20,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 3,
-    borderColor: 'red',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#f0f0f0',
+  },
+  headerButtons: {
+    flex: 1,
+    // marginLeft: 5,
+    maxWidth: 200,
+  },
+  button: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 20,
+    padding: 10,
+    marginBottom: 10,
+  },
+  buttonText: {
+    marginLeft: 10,
+    fontWeight: 'bold',
   },
   name: {
-    fontSize: 24,
+    fontSize: 35,
     fontWeight: 'bold',
-    marginTop: 10,
+    marginBottom: 5,
   },
   team: {
+    fontSize: 20,
+    color: 'red',
+    marginBottom: 5,
+    fontWeight: 'bold',
+  },
+  position: {
+    fontSize: 16,
+    color: 'gray',
+    marginBottom: 15,
+    fontWeight: 'bold',
+  },
+  quoteContainer: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    borderColor: 'black', // Border color
+    borderTopWidth: 1,       // Border width to make it visible
+    borderBottomWidth: 1,    // Border width to make it visible
+  },
+  quote: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    marginBottom: 5,
+  },
+  quoteAuthor: {
+    fontSize: 14,
+    textAlign: 'right',
+  },
+  teamCodeContainer: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    justifyContent: 'space-around',
+  },
+  teamCodeLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  codeButtonText: {
+    paddingTop: 2,
+    paddingLeft: 10,
+    fontWeight: 'bold',
+  },
+  teamCodeValue: {
     fontSize: 18,
     color: 'red',
     fontWeight: 'bold',
   },
-  role: {
-    fontSize: 16,
-    color: 'gray',
-  },
-  quoteContainer: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#eee',
-  },
-  quote: {
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  editButton: {
-    backgroundColor: '#eee',
-    padding: 15,
-    margin: 20,
-    borderRadius: 5,
-  },
-  editButtonText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  optionButton: {
-    padding: 15,
-    marginHorizontal: 20,
-    borderBottomWidth: 1,
-    borderColor: '#eee',
-  },
-  optionButtonText: {
-    fontSize: 16,
-  },
-  footer: {
-    padding: 20,
+  codeContainer: {
+    flexDirection: 'col',
+    justifyContent: 'space-around',
     alignItems: 'center',
-  },
-  changePassword: {
-    fontSize: 16,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 15,
     marginBottom: 10,
   },
+  code: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    letterSpacing: 20,
+  },
+  codeButtons: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  codeButton: {
+    marginLeft: 15,
+    display: 'flex',
+    flexDirection: 'row',
+    borderRadius: 10,
+    borderColor: 'black', // Border color
+    borderWidth: 1,       // Border width to make it visible
+    padding: 10,
+  },
+  codeButtonShare: {
+    marginLeft: 15,
+    display: 'flex',
+    flexDirection: 'row',
+    borderRadius: 50,
+    borderColor: 'black', // Border color
+    borderWidth: 1,       // Border width to make it visible
+    padding: 10,
+  },
+  refreshText: {
+    textAlign: 'center',
+    color: 'gray',
+    marginBottom: 20,
+  },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    padding: 5,
+    borderRadius: 10,
+    borderColor: 'grey', // Border color
+    borderWidth: 1,       // Border width to make it visible
+  },
+  optionText: {
+    marginLeft: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  changePassword: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  changePasswordText: {
+    fontSize: 16,
+    color: '#343434',
+  },
   logOut: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  logOutText: {
     fontSize: 16,
     color: 'red',
   },

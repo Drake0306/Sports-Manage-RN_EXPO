@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Keyboard } from 'react-native';
 import { ArrowRightIcon } from 'lucide-react-native';
 import { Link, router } from "expo-router";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function CreateAnnouncement() {
   const [announcement, setAnnouncement] = useState('');
@@ -14,7 +15,11 @@ export default function CreateAnnouncement() {
   };
 
   const redirect = (url) => {
-    router.replace(url);
+    if(url === ''){
+      router.back();
+    } else {
+      router.navigate(url);
+    }
   };
 
   return (
@@ -47,7 +52,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   title: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
   },

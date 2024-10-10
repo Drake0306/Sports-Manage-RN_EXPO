@@ -15,12 +15,14 @@ export default function AthleticsQRCode() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>WALNUT HILLS HIGH SCHOOL ATHLETICS</Text>
-      <Image
+      {/* <Text style={styles.title}>WALNUT HILLS HIGH SCHOOL ATHLETICS</Text> */}
+      <Text style={styles.title}>Comming Soon </Text>
+
+      {/* <Image
         source={require('../../assets/images/qrcode.png')} // Replace with actual QR code image
         style={styles.qrCode}
-      />
-      <View style={styles.buttonContainer}>
+      /> */}
+      {/* <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.copyButton} onPress={handleCopyLink}>
           <Link size={20} color="#000" />
           <Text style={styles.buttonText}>COPY LINK</Text>
@@ -28,7 +30,7 @@ export default function AthleticsQRCode() {
         <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
           <Share size={20} color="#000" />
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 }
