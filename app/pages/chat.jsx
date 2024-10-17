@@ -41,7 +41,7 @@ export default function Chat() {
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>TONY ZINGALE</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => redirect('/pages/functionChat/personProfileDetails')}>
           <Ionicons name="ellipsis-vertical" size={24} color="black" />
         </TouchableOpacity>
       </View>

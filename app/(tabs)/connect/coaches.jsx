@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, router } from "expo-router";
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { ArrowLeft } from 'lucide-react-native';
+import SearchBar from '../../components/searchBar';
 
 const coachesData = [
   { id: 1, name: 'TONY ZINGALE', message: 'Great - talk soon.', image: '', hasNotification: true },
@@ -31,11 +32,9 @@ export default function Coaches() {
               </TouchableOpacity>
               <Text style={styles.headerText}>COACHES</Text>
             </View>
-            <TouchableOpacity onPress={() => router.navigate('/pages/parentProfile')} style={styles.profileContainer}>
-              <Text style={styles.profileText}>JASONM</Text>
-              <View style={styles.profileImage} />
-            </TouchableOpacity>
           </View>
+          <SearchBar />
+
         {/* <Text style={styles.title}>COACHES</Text> */}
         <ScrollView style={styles.scrollView}>
           {coachesData.map((coach) => (

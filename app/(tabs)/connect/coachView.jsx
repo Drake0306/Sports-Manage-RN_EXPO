@@ -3,9 +3,10 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, router } from "expo-router";
+import SearchBar from '../../components/searchBar';
 
 const Person = ({ name, message, isHighlighted = false }) => (
-  <TouchableOpacity onPress={() => redirect('/pages/chat')} style={[styles.personContainer, isHighlighted && styles.highlightedContainer]}>
+  <TouchableOpacity onPress={() => redirect('/pages/chat/')} style={[styles.personContainer, isHighlighted && styles.highlightedContainer]}>
     <View style={styles.avatarContainer}>
       <Ionicons name="person-circle-outline" size={40} color="#888" />
     </View>
@@ -56,6 +57,7 @@ export default function coachView() {
         </TouchableOpacity>
       </View>
       <View style={styles.containerHeader}>
+        <SearchBar />
         <ScrollView>
           <Section title="COACHES" data={coaches} />
           <Section title="ATHLETES" data={athletes} />

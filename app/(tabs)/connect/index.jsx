@@ -5,7 +5,7 @@ import CoachView from './coachView';
 import StudentView from './studentView';
 
 export default function index () {
-    const data = 1;
+    const data = 3;
     if(data == 1) {
         return (
             <>
