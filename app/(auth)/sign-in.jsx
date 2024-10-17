@@ -12,28 +12,30 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import * as AuthSession from 'expo-auth-session';
-import * as WebBrowser from 'expo-web-browser';
-import { useLoginStore } from '../store/signupStore'; // Import login store
-import { storeToken } from './authUtils'; 
-
+import * as AuthSession from "expo-auth-session";
+import * as WebBrowser from "expo-web-browser";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLoginStore, useSignupStore } from "../store/signupStore"; // Import login store
+import { storeToken } from "./authUtils";
 WebBrowser.maybeCompleteAuthSession();
 
 // Discovery URLs for Google and Microsoft
 const googleDiscovery = {
-  authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
-  tokenEndpoint: 'https://oauth2.googleapis.com/token',
+  authorizationEndpoint: "https://accounts.google.com/o/oauth2/v2/auth",
+  tokenEndpoint: "https://oauth2.googleapis.com/token",
 };
 
 const microsoftDiscovery = {
-  authorizationEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
-  tokenEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
+  authorizationEndpoint:
+    "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+  tokenEndpoint: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
 };
-
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { fetchLoginData, loading } = useLoginStore();
+  const { fetchLoginData } = useLoginStore();
+  const { sendOtp } = useSignupStore();
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // Local error state
@@ -42,110 +44,138 @@ export default function LoginScreen() {
   // Google OAuth Function
   const googleAuth = async () => {
     try {
-      const clientId = '963918752399-hdsnjr0e6786b0i5c8sva5ijgno5d5bs.apps.googleusercontent.com'; // IOS APPS TODO Android needed
+      const clientId =
+        "963918752399-hdsnjr0e6786b0i5c8sva5ijgno5d5bs.apps.googleusercontent.com"; // IOS APPS TODO Android needed
       const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
 
       const request = new AuthSession.AuthRequest({
         clientId,
-        scopes: ['openid', 'profile', 'email'],
+        scopes: ["openid", "profile", "email"],
         redirectUri,
       });
 
       const authResponse = await request.promptAsync(googleDiscovery);
 
-      if (authResponse.type === 'success') {
+      if (authResponse.type === "success") {
         const tokenResponse = await fetch(googleDiscovery.tokenEndpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: `code=${authResponse.params.code}&client_id=${clientId}&redirect_uri=${redirectUri}&grant_type=authorization_code`,
         });
 
         const tokenResult = await tokenResponse.json();
         const { access_token } = tokenResult;
 
-        const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-          headers: { Authorization: `Bearer ${access_token}` },
-        });
+        const userInfoResponse = await fetch(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          {
+            headers: { Authorization: `Bearer ${access_token}` },
+          }
+        );
 
         const user = await userInfoResponse.json();
         setUserInfo({ email: user.email, token: access_token });
       }
     } catch (error) {
-      console.error('Google Authentication Error:', error);
+      console.error("Google Authentication Error:", error);
     }
   };
 
   // Microsoft OAuth Function
   const microsoftAuth = async () => {
     try {
-      const clientId = '29d4dc7b-ed5b-44cb-a789-250f11ccdeee'; // TODO NEED TO CHANGE
+      const clientId = "29d4dc7b-ed5b-44cb-a789-250f11ccdeee"; // TODO NEED TO CHANGE
       const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
 
       const request = new AuthSession.AuthRequest({
         clientId,
-        scopes: ['openid', 'profile', 'email', 'User.Read'],
+        scopes: ["openid", "profile", "email", "User.Read"],
         redirectUri,
       });
 
       const authResponse = await request.promptAsync(microsoftDiscovery);
 
-      if (authResponse.type === 'success') {
+      if (authResponse.type === "success") {
         const tokenResponse = await fetch(microsoftDiscovery.tokenEndpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: `code=${authResponse.params.code}&client_id=${clientId}&redirect_uri=${redirectUri}&grant_type=authorization_code`,
         });
 
         const tokenResult = await tokenResponse.json();
         const { access_token } = tokenResult;
 
-        const userInfoResponse = await fetch('https://graph.microsoft.com/v1.0/me', {
-          headers: { Authorization: `Bearer ${access_token}` },
-        });
+        const userInfoResponse = await fetch(
+          "https://graph.microsoft.com/v1.0/me",
+          {
+            headers: { Authorization: `Bearer ${access_token}` },
+          }
+        );
 
         const user = await userInfoResponse.json();
-        setUserInfo({ email: user.mail || user.userPrincipalName, token: access_token });
+        setUserInfo({
+          email: user.mail || user.userPrincipalName,
+          token: access_token,
+        });
       }
     } catch (error) {
-      console.error('Microsoft Authentication Error:', error);
+      console.error("Microsoft Authentication Error:", error);
     }
   };
 
   const handleLogin = async () => {
     setError("");
-  
+    setLoading(true); // Start loading
+
     // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address.");
+      setLoading(false); // Stop loading on error
       return;
     }
-  
+
     // Validate password
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
+      setLoading(false); // Stop loading on error
       return;
     }
-  
+
     try {
       const resp = await fetchLoginData({ email, password }); // Call the login API
       if (!resp.error && resp.token) {
-        await storeToken(resp.token); // Store token if signup is successful
-      
-        Alert.alert("Success", "Login successful!", [
-          { text: "OK", onPress: () => router.navigate("/home") },
-        ]);
-      
-      
+        await storeToken(resp.token);
+        if (resp.otp) {
+          const otpResp = await sendOtp(resp.contact);
+          await AsyncStorage.setItem("@phone", resp.contact); // Use a string key for storage
+          if (otpResp.success) {
+            Alert.alert(
+              "Success",
+              "Verification Pending..! Please check your SMS for the OTP.",
+              [
+                {
+                  text: "OK",
+                  onPress: () => router.navigate(`/OtpVerificationScreen`),
+                },
+              ]
+            );
+          }
+        } else {
+          Alert.alert("Success", "Login successful!", [
+            { text: "OK", onPress: () => router.navigate("/home") },
+          ]);
+        }
       } else {
-        setError(resp.message || 'An error occurred');
+        setError(resp.message || "An error occurred");
       }
     } catch (error) {
       // Catch any unexpected errors
-      setError(error.message || 'An unexpected error occurred');
+      setError(error.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false); // Stop loading regardless of the outcome
     }
   };
-  
 
   const handleMicrosoftLogin = () => {
     console.log("Microsoft login pressed");
@@ -158,7 +188,7 @@ export default function LoginScreen() {
     >
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Text style={styles.title}>Sign In</Text>
-  
+
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -175,23 +205,25 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             secureTextEntry
           />
-        {error && <Text style={styles.errorText}>{error}sfd</Text>}
+          {error && <Text style={styles.errorText}>{error}</Text>}
         </View>
-  
+
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Sign In</Text>
+        <Text style={styles.loginButtonText}>
+            {loading ? "Signing In..." : "Sign In"}
+          </Text>
         </TouchableOpacity>
-  
+
         <TouchableOpacity style={styles.forgotPassword}>
           <Text style={styles.forgotPasswordText}>Forgot password?</Text>
         </TouchableOpacity>
-  
+
         <View style={styles.divider}>
           <View style={styles.dividerLine} />
           <Text style={styles.dividerText}>or</Text>
           <View style={styles.dividerLine} />
         </View>
-  
+
         <TouchableOpacity
           style={styles.microsoftButton}
           onPress={microsoftAuth}
@@ -199,11 +231,8 @@ export default function LoginScreen() {
           <Ionicons name="logo-windows" size={24} color="white" />
           <Text style={styles.microsoftButtonText}>Sign in with Microsoft</Text>
         </TouchableOpacity>
-  
-        <TouchableOpacity
-          style={styles.googleButton}
-          onPress={googleAuth}
-        >
+
+        <TouchableOpacity style={styles.googleButton} onPress={googleAuth}>
           <Ionicons name="logo-google" size={24} color="white" />
           <Text style={styles.googleButtonText}>Sign in with Google</Text>
         </TouchableOpacity>
@@ -216,8 +245,6 @@ export default function LoginScreen() {
       </ScrollView>
     </KeyboardAvoidingView>
   );
-  
-  
 }
 
 const styles = StyleSheet.create({

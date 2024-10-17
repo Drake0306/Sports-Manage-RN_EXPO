@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert, Share   } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert, Share, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { Link, router } from "expo-router";
+import { removeToken } from "./../(auth)/authUtils";
+import { useSignupStore } from './../store/signupStore'; // Adjust path as needed
+
+
 
 export default function UserProfile() {
+  const { logout  } = useSignupStore();
+  const [loading, setLoading] = useState(false); // Local loading state
+
+
   const [timeLeft, setTimeLeft] = useState(29);
   const [code, setCode] = useState(123456);
 
@@ -39,6 +47,39 @@ export default function UserProfile() {
       router.navigate(url);
     }
   };
+
+
+  // In your UserProfile component
+
+const handleLogout = async () => {
+  
+  setLoading(true); // Start the loader
+  try {
+    const response = await logout(); // Call the logout function from the store
+    await removeToken(); // Remove the token from storage
+
+    if (response.error) {
+      Alert.alert("Error", response.message); // Handle logout error
+    } else {
+      Alert.alert(
+        "Logged Out",
+        response.message,
+        [
+          {
+            text: "OK",
+            onPress: () => Redirect('/(auth)/sign-in'),
+          },
+        ]
+      );
+    }
+  } catch (error) {
+    console.error("Error during logout", error);
+    Alert.alert("Error", "There was a problem logging you out. Please try again.");
+  } finally {
+    setLoading(false); // Stop the loader
+  }
+};
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -125,6 +166,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  }, 
+  loaderContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
     padding: 10,
   },
   header: {

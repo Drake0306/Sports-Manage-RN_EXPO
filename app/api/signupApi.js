@@ -1,10 +1,31 @@
 import { getMinutes } from "date-fns";
 import { createAuthHeaders } from './../(auth)/authUtils'; // Adjust the import based on your structure
 
-const BASE_URL = 'http://192.168.114.196:4000'; // Replace with your actual IP address
+const BASE_URL = 'http://192.168.62.192:4000'; // Replace with your actual IP address
+
+export const fetchOrganizationsCoaches = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/organiz-coach`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch organizations and coaches');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching organizations and coaches:', error.message);
+    throw error; // Propagate error
+  }
+};
 
 
-export const signupUser = async ({ firstname, lastname, email, password, role, contactNumber, dateOfBirth }) => {
+export const signupUser = async ({ firstname, lastname, email, password, role,phoneNumber,username,coachType,organization, dateOfBirth }) => {
   try {
     const response = await fetch(`${BASE_URL}/auth/register`, {
       method: 'POST',
@@ -15,9 +36,12 @@ export const signupUser = async ({ firstname, lastname, email, password, role, c
         firstname,
         lastname,
         email,
+        username,
+        organization,
+        coachType,
         password,
         role,
-        contactNumber,
+        phoneNumber,
         dateOfBirth,
         status: 'active',
       }),
@@ -31,6 +55,8 @@ export const signupUser = async ({ firstname, lastname, email, password, role, c
     throw error; // Propagate the error for handling in the component
   }
 };
+
+
 
 
 export const sendOtp = async (contactNumber) => {
@@ -70,7 +96,28 @@ export const fetchLoginData = async ({email,password}) => {
     throw error; // Propagate the error
   }
 };
-// signupApi.js
+
+
+export const logoutUser = async () => {
+  const headers = await createAuthHeaders(); // Create headers with the JWT token
+
+  try {
+    const response = await fetch(`${BASE_URL}/user/logout`, {
+      method: 'POST',
+      headers,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to log out');
+    }
+
+    return await response.json(); // Assuming the server returns a JSON response
+  } catch (error) {
+    console.error('Error during logout:', error.message);
+    throw error; // Propagate the error for handling in the component
+  }
+};
+
 
 export const verifyOtp = async (otp, phone) => {
   try {

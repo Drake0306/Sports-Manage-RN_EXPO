@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AccountCreation() {
   const router = useRouter();
@@ -12,10 +13,47 @@ export default function AccountCreation() {
   const [showPassword, setShowPassword] = useState(false);
 
   const refirect = (url) => {
-    if (url == '') {
-        router.back();
+    if (url === '') {
+      router.back();
     } else {
-        router.navigate(url);
+      router.navigate(url);
+    }
+  };
+
+  const handleContinue = async () => {
+    // Validation for username and password
+    if (!username) {
+      Alert.alert('Validation Error', 'Username cannot be empty');
+      return;
+    }
+
+    if (!password) {
+      Alert.alert('Validation Error', 'Password cannot be empty');
+      return;
+    }
+
+    // Password criteria: minimum 6 characters
+    if (password.length < 6) {
+      Alert.alert('Validation Error', 'Password must be at least 6 characters long');
+      return;
+    }
+
+    // Store data in AsyncStorage
+    const userData = {
+      username,
+      password
+      
+    };
+
+    try {
+      const existingData = await AsyncStorage.getItem('userData');
+      const previousData = existingData ? JSON.parse(existingData) : {};
+      const newUserData = { ...previousData, ...userData };
+      await AsyncStorage.setItem('userData', JSON.stringify(newUserData));
+      // Redirect to the next screen
+      refirect('/coach/detailsCreation');
+    } catch (error) {
+      console.error('Error storing user data', error);
     }
   };
 
@@ -25,9 +63,9 @@ export default function AccountCreation() {
         <TouchableOpacity onPress={() => refirect('')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        
+
         <Text style={styles.title}>CREATE AN ACCOUNT</Text>
-        
+
         <View style={styles.avatarContainer}>
           <View style={styles.avatar}>
             <Ionicons name="person-outline" size={40} color="gray" />
@@ -36,7 +74,7 @@ export default function AccountCreation() {
             <Ionicons name="pencil" size={20} color="black" />
           </TouchableOpacity>
         </View>
-        
+
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>USERNAME</Text>
           <View style={styles.inputWrapper}>
@@ -49,7 +87,7 @@ export default function AccountCreation() {
             />
           </View>
         </View>
-        
+
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>PASSWORD</Text>
           <View style={styles.inputWrapper}>
@@ -66,9 +104,8 @@ export default function AccountCreation() {
             </TouchableOpacity>
           </View>
         </View>
-      
-        
-        <TouchableOpacity onPress={() => refirect('/coach/detailsCreation')} style={styles.continueButton}>
+
+        <TouchableOpacity onPress={handleContinue} style={styles.continueButton}>
           <Text style={styles.continueButtonText}>CONTINUE</Text>
         </TouchableOpacity>
       </ScrollView>

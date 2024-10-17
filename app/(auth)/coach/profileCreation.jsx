@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProfileCreation() {
   const router = useRouter();
@@ -11,12 +12,70 @@ export default function ProfileCreation() {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const refirect = (url) => {
-    if (url == '') {
-        router.back();
+    if (url === '') {
+      router.back();
     } else {
-        router.navigate(url);
+      router.navigate(url);
+    }
+  };
+
+  const isValidEmail = (email) => {
+    // Regular expression for basic email validation
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const handleContinue = async () => {
+    // Validation
+    if (!firstName) {
+      Alert.alert('Validation Error', 'First Name is required.');
+      return;
+    }
+    if (lastName === '') {
+      // Allow last name to be empty, no action needed here
+    }
+    if (!email) {
+      Alert.alert('Validation Error', 'Email is required.');
+      return;
+    }
+    if (!isValidEmail(email)) {
+      Alert.alert('Validation Error', 'Please enter a valid email address.');
+      return;
+    }
+    if (!phoneNumber) {
+      Alert.alert('Validation Error', 'Phone Number is required.');
+      return;
+    }
+    if (!acceptTerms) {
+      Alert.alert('Terms & Conditions', 'You must accept the terms & conditions to continue.');
+      return;
+    }
+
+    // Set loading state
+    setLoading(true);
+
+    try {
+      // Simulate a network request or any processing needed
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate loading for 2 seconds
+
+      // Store user data in local storage
+      const userData = {
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+      };
+      await AsyncStorage.setItem('userData', JSON.stringify(userData));
+
+      // Redirect to the next screen
+      refirect('/coach/accountCreation');
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false); // Stop loading regardless of success or failure
     }
   };
 
@@ -43,7 +102,7 @@ export default function ProfileCreation() {
         </View>
         
         <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>LAST NAME</Text>
+          <Text style={styles.inputLabel}>LAST NAME (optional)</Text>
           <View style={styles.inputWrapper}>
             <Ionicons name="person-outline" size={20} color="gray" style={styles.inputIcon} />
             <TextInput
@@ -94,12 +153,16 @@ export default function ProfileCreation() {
         </TouchableOpacity>
         
         <Text style={styles.loginText}>
-          Already have an account? <Text onPress={() => refirect('/sign-in')} style={styles.loginLink}>Log In</Text>
+          Already have an account? <Text onPress={() => refirect('/sign-in-global')} style={styles.loginLink}>Log In</Text>
         </Text>
-        
-        <TouchableOpacity onPress={() => refirect('/coach/accountCreation')} style={styles.continueButton}>
-          <Text style={styles.continueButtonText}>CONTINUE</Text>
-        </TouchableOpacity>
+
+        {loading ? (
+          <ActivityIndicator size="large" color="black" style={styles.loader} />
+        ) : (
+          <TouchableOpacity onPress={handleContinue} style={styles.continueButton}>
+            <Text style={styles.continueButtonText}>CONTINUE</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -188,4 +251,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  loader: {
+    marginVertical: 20,
+  },
 });
+  

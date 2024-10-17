@@ -56,7 +56,7 @@ export default function OtpVerificationScreen() {
     try {
       const otpResp = await sendOtp(phone);
       if (otpResp.success) {
-        Alert.alert("Success", "Please check your SMS for the OTP.", [
+        Alert.alert("Success", "OTP has been resend Successfully.", [
           {
             text: "OK",
           },
