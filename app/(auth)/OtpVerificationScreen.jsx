@@ -7,6 +7,9 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import { getUserRoleFromToken } from "./jwtDecoder.js";
+import { retrieveToken, createAuthHeaders } from "./authUtils"; // Import the utility functions
+
 import { useRouter } from "expo-router";
 import { useSignupStore } from "../store/signupStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -41,9 +44,39 @@ export default function OtpVerificationScreen() {
     try {
       const resp = await verifyOtp(otp, phone); // Call the OTP verification method
       if (resp.success) {
-        Alert.alert("Success", "OTP verified successfully!", [
-          { text: "OK", onPress: () => router.navigate("/home") },
-        ]);
+        const token = await retrieveToken();
+        if (token) {
+          const role = getUserRoleFromToken(token);
+          if (role) {
+            switch (role) {
+              case "parent":
+                Alert.alert("Success", "Login successful!", [
+                  { text: "OK", onPress: () => redirect("/home") },
+                ]); // Admin dashboard
+                break;
+              case "student":
+                Alert.alert("Success", "Login successful!", [
+                  { text: "OK", onPress: () => redirect("/home") },
+                ]); // User home page
+                break;
+              case "coach":
+                Alert.alert("Success", "Login successful!", [
+                  { text: "OK", onPress: () => redirect("/home") },
+                ]); // Manager overview page
+                break;
+              default:
+                Alert.alert("Success", "Login successful!", [
+                  { text: "OK", onPress: () => redirect("/home") },
+                ]);
+            }
+          }
+        } else {
+          console.log("No token found");
+        }
+
+        // Alert.alert("Success", "OTP verified successfully!", [
+        //   { text: "OK", onPress: () => router.navigate("/home") },
+        // ]);
       } else {
         setError(resp.message || "Failed to verify OTP");
       }
@@ -69,7 +102,6 @@ export default function OtpVerificationScreen() {
       console.error("Error sending OTP:", error);
     }
   };
-  
 
   return (
     <View style={styles.container}>
@@ -101,12 +133,12 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   resendOtpText: {
-    color: '#007BFF',
+    color: "#007BFF",
     fontSize: 16,
-    textDecorationLine: 'underline', // Underline for a link effect
-    textAlign: 'center', // Center the text
+    textDecorationLine: "underline", // Underline for a link effect
+    textAlign: "center", // Center the text
     marginTop: 10,
-    marginBottom:15, // Add some spacing above
+    marginBottom: 15, // Add some spacing above
   },
   title: {
     fontSize: 24,
