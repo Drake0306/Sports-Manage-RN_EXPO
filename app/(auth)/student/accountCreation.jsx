@@ -20,6 +20,44 @@ export default function AccountCreation() {
     }
   };
 
+
+  const handleContinue = async () => {
+    // Validation for username and password
+    if (!username) {
+      Alert.alert('Validation Error', 'Username cannot be empty');
+      return;
+    }
+
+    if (!password) {
+      Alert.alert('Validation Error', 'Password cannot be empty');
+      return;
+    }
+
+    // Password criteria: minimum 6 characters
+    if (password.length < 6) {
+      Alert.alert('Validation Error', 'Password must be at least 6 characters long');
+      return;
+    }
+
+    // Store data in AsyncStorage
+    const userData = {
+      username,
+      password
+      
+    };
+
+    try {
+      const existingData = await AsyncStorage.getItem('userData');
+      const previousData = existingData ? JSON.parse(existingData) : {};
+      const newUserData = { ...previousData, ...userData };
+      await AsyncStorage.setItem('userData', JSON.stringify(newUserData));
+      // Redirect to the next screen
+      refirect('/coach/detailsCreation');
+    } catch (error) {
+      console.error('Error storing user data', error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
         <View style={styles.container}>

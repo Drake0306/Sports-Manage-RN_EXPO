@@ -11,6 +11,102 @@ export default function DetailsCreation() {
     const [parentEmail, setParentEmail] = useState('');
     const [parentPhone, setParentPhone] = useState('');
 
+    const validateInputs = () => {
+      let valid = true;
+      let newErrors = {};
+      
+
+      // TOTO 
+      if (!dateOfBirth) {
+        newErrors.dateOfBirth = "Date of Birth is required";
+        valid = false;
+      }
+  
+      setErrors(newErrors);
+      return valid;
+    };
+  
+    const handleRegister = async () => {
+      setError(""); // Clear any existing error
+  
+      // Validate inputs and get the result
+      const isValid = validateInputs();
+  
+      // If inputs are not valid, alert the errors and return
+      if (!isValid) {
+        // Show validation errors as alerts
+        for (const [key, value] of Object.entries(errors)) {
+          Alert.alert("Validation Error", value, [{ text: "OK" }]);
+        }
+        return; // Stop execution if validation fails
+      }
+  
+      const formattedDOB = dateOfBirth.toISOString().split("T")[0]; // Format date if needed
+      setCoachtype(selectedCoachType.type); // Set the coach type state
+      setOrganization(selectedOrganization.name);
+  
+      try {
+        const jsonValue = await AsyncStorage.getItem("userData");
+        if (jsonValue !== null) {
+          const userData = JSON.parse(jsonValue);
+          const { email, firstName, lastName, password, phoneNumber, username } =
+            userData;
+          try {
+            const resp = await signup({
+              firstname: firstName.trim(),
+              lastname: lastName.trim(),
+              email: email.trim(),
+              password: password.trim(),
+              role: "coach",
+              username: username.trim(),
+              phoneNumber: `+91${phoneNumber.trim()}`,
+              dateOfBirth: formattedDOB,
+              coachType: selectedCoachType.id,
+              organization: selectedOrganization.id,
+            });
+  
+            if (resp && !resp.error && resp.token) {
+              const otpResp = await sendOtp(`+91${phoneNumber.trim()}`);
+              await AsyncStorage.setItem("@phone", `+91${phoneNumber.trim()}`);
+  
+              if (otpResp.success) {
+                await storeToken(resp.token);
+                Alert.alert(
+                  "Success",
+                  "Account created successfully! Please check your SMS for the OTP.",
+                  [
+                    {
+                      text: "OK",
+                      onPress: () => router.navigate(`/OtpVerificationScreen`),
+                    },
+                  ]
+                );
+              } else {
+                Alert.alert("Error", otpResp.message || "Failed to send OTP", [
+                  { text: "OK" },
+                ]);
+              }
+            } else {
+              Alert.alert(
+                "Error",
+                resp?.message || "An unexpected error occurred",
+                [{ text: "OK" }]
+              );
+            }
+          } catch (error) {
+            Alert.alert(
+              "Error",
+              error.message || "An unexpected error occurred",
+              [{ text: "OK" }]
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        Alert.alert("Error", "Failed to fetch user data", [{ text: "OK" }]);
+      }
+    };
+
     const refirect = (url) => {
         if (url == '') {
             router.back();

@@ -1,7 +1,7 @@
 import { getMinutes } from "date-fns";
 import { createAuthHeaders } from './../(auth)/authUtils'; // Adjust the import based on your structure
 
-const BASE_URL = 'http://192.168.62.192:4000'; // Replace with your actual IP address
+const BASE_URL = 'http://192.168.0.106:4000'; // Replace with your actual IP address
 
 export const fetchOrganizationsCoaches = async () => {
   try {
